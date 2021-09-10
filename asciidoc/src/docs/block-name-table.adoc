@@ -1,0 +1,105 @@
+////
+Table of blocks, block names, block delimiters, and their substitutions
+User Manual: Blocks
+////
+
+[cols="1,1m,1m,3,1"]
+|===
+|Block |Block Name |Delimiter |Purpose |Substitutions
+
+|Paragraph
+d|n/a
+d|n/a
+|常规段落内容（即散文），两边各有一个空行。必须开始与文档的左边距齐平。块名称可用于将段落转换为大多数其他块。
+|Normal
+
+|Literal paragraph
+d|n/a
+d|n/a
+|文字内容（即预格式化文本）的一种特殊类型的段落块。必须从文档的左边距缩进至少一个空格。当内容不包含任何空行时，通常用作文字分隔块的简写。
+|Verbatim
+
+|Admonition
+|++[<LABEL>]++
+|++====++
+|除了需要特别注意的内容; often labeled with a tag or icon
+|Normal
+
+|Comment
+d|n/a
+|++////++
+|未显示在输出中的私人笔记
+|None
+
+|Example
+|++[example]++
+|++====++
+|Designates example content or defines an admonition block
+|Normal
+
+|Fenced
+d|n/a
+|++```++
+|源代码或键盘输入显示为输入。如果在文档上启用并设置了语言，源荧光笔将被着色。
+|Verbatim
+
+|Listing
+|++[listing]++
+|++----++
+|Source code or keyboard input is displayed as entered
+|Verbatim
+
+|Literal
+|++[literal]++
+|++....++
+|输出文本完全按照输入显示
+|Verbatim
+
+|Open
+d|Most block names
+|++--++
+|可以充当任何块的匿名块，除了 _passthrough_ 或 _table_ 块
+|Varies
+
+|Passthrough
+|++[pass]++
+|pass:[++++]
+|直接发送到输出的未处理内容
+|None
+
+|Quote
+|++[quote]++
+|++____++
+| 引用
+|Normal
+
+|Sidebar
+|++[sidebar]++
+|++****++
+|除了显示在文档流程之外的文本和内容
+|Normal
+
+|Source
+|++[source]++
+|++----++
+|要显示为输入的源代码或键盘输入。如果在文档上启用并设置了语言，源荧光笔将被着色。
+|Verbatim
+
+|Stem
+|++[stem]++
+|pass:[++++]
+|直接发送给解释器的未处理内容（例如 AsciiMath 或 LaTeX 数学）
+|None
+
+|Table
+d|n/a
+|++\|===++
+|显示表格内容
+|Varies
+
+|Verse
+|++[verse]++
+|++____++
+|当您需要保留缩进和换行符时，请使用诗句块。诗句是通过在由四个下划线 (____) 分隔的段落或摘录块上设置诗句来定义的。
+|Normal
+|===

@@ -1,0 +1,38 @@
+= ascii 教程文档
+:idseparator: -
+:toc: preamble
+:icons: font
+
+== 转换文档
+
+目前有这 `asciidoctor` 和 `gradle-plugin` 两种方式可以将源文件（ `.adoc` ）转为 html 或者 pdf.
+
+
+===  Asciidoctor
+
+. 要转换 asciidoc 文件，您需要安装 Asciidoctor gem。
+
+ gem install  asciidoctor
+
+. 如果您希望能够创建 pdf 文件，您可以使用 asciidoctor-pdf gem。
+
+ gem install --pre asciidoctor-pdf
+
+. cd 到 `src/main/docs`
+. 转化文档
++
+* 转html
+
+    asciidoctor *.adoc -D html <1>
+
+    <1> 将该目录下的所有 `adoc` 转为html，并放到 `html`目录下. `-D html` 指定输出目录。
+
+* 转 pdf
+    asciidoctor *.adoc -D pdf
+
+=== pdf 乱码问题
+include::src/docs/first.adoc[tags=asciidoctor-pdf]
+
+=== gradle plugin
+
+

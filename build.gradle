@@ -1,19 +1,23 @@
 plugins {
-    id 'java'
+    id 'org.asciidoctor.convert' version '1.5.3'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-repositories {
-    mavenCentral()
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
 }
 
-dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
-}
+subprojects {
+    apply plugin: 'java'
 
-test {
-    useJUnitPlatform()
+    sourceCompatibility = 11
+    targetCompatibility = 11
+
+    tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+
+    repositories {
+        mavenLocal()
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        mavenCentral()
+    }
 }

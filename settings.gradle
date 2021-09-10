@@ -1,2 +1,4 @@
 rootProject.name = 'tutorial'
+include 'asciidoc'
+include 'testing'
 

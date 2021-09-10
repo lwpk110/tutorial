@@ -1,0 +1,32 @@
+= Document Title
+:source-highlighter: rouge
+:docinfo: private
+
+<style>
+pre.rouge .hll {
+background-color: #ffc;
+}
+pre.rouge .hll * {
+background-color: initial;
+}
+</style>
+
+[source,ruby]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+
+[source%linenums,ruby,highlight=2..5]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----

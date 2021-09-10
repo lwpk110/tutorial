@@ -1,0 +1,1146 @@
+= Asciidoc 简易指南
+include::attributes.adoc[]
+Author Name <author@email.org>
+v2.0, 2019-03-22
+:toc: left
+:icons: font
+:toc-title: Table of Adventures
+:homepage: https://example.org
+:experimental: true
+:favicon: images/icons/fav.png
+:imagesdir: ./images
+//:exercise_solution:
+:test-condition1:
+:test-condition2: 1
+:source-highlighter: coderay
+
+
+////
+:source-highlighter: pygments
+:pygments-style: borland
+////
+
+////
+:source-highlighter: highlightjs
+:highlightjs-theme: xcode
+////
+
+[#_段落]
+== 段落
+
+
+Paragraphs don't require special markup in AsciiDoc.
+A paragraph is defined by one or more consecutive lines of text.
+Newlines within a paragraph are not displayed.
+
+Leave at least one blank line to begin a new paragraph.
+
+=== 文字段落
+
+A normal paragraph.
+
+ A literal paragraph.
+ One or more consecutive lines indented by at least one space.
+
+ The text is shown in a fixed-width (typically monospace) font.
+ The lines are preformatted (i.e., as formatted in the source).
+ Spaces and newlines,
+ like the ones in this sentence,
+ are preserved.
+
+=== 硬换行
+
+Roses are red, +
+violets are blue.
+
+[%hardbreaks]
+A ruby is red.
+Java is black.
+
+=== 引导段落(字体会大一些)
+
+[.lead]
+This text will be styled as a lead paragraph (i.e., larger font).
+
+This paragraph will not be.
+
+== 文本格式
+
+=== 粗体、斜体和等宽
+
+It has *strong* significance to me.
+*粗体*
+
+I _cannot_ stress this enough.
+_斜体_
+
+Type `OK` to accept. `突出`  ``突出``
+
+That *_really_* has to go.
+*_粗斜体_*
+
+Can't pick one?
+Let's use them `*_all_*`.  `*_斜粗体+突出_*`
+
+=== 局部粗体、斜体和等宽
+
+**C**reate, **R**ead, **U**pdate, and **D**elete (CRUD) *R*ead: 不行
+
+That's fan__freakin__tastic!
+
+Don't pass generic ``Object``s to methods that accept ``String``s!
+
+It was Beatle**__mania__**!
+
+=== 高亮 下划线、删除线和自定义角色
+
+Werewolves are allergic to #cinnamon#.
+#高亮#
+
+##Mark##up refers to text that contains formatting ##mark##s.
+##局部##高亮
+
+Where did all the [.underline]#cores# go?   [.underline]#下划线#
+
+We need [.line-through]#ten# twenty VMs.  [.line-through]#删除线#
+
+A [.myrole]#custom role# must be fulfilled by the theme.
+
+=== 上标和下标
+
+^super^script phrase | 2^99^ + 1^88^ =?
+
+~sub~script phrase | S~2~ + S~3~ = S~4~
+
+=== 智能双引号和单引号
+
+"`double curved quotes`" "`双引号`"
+
+'`single curved quotes`' '`单引号`'
+
+Olaf's desk was a mess.
+
+A ``std::vector```'s size is the number of items it contains.  ``高亮单引号``'s
+
+All of the werewolves`' desks were a mess.
+
+Olaf had been with the company since the `'00s.
+
+== 链接
+
+=== 自动连接，超链接，mail to 宏
+
+https://asciidoctor.org - automatic!
+
+https://asciidoctor.org[Asciidoctor]  http://baidu.com[超链接]
+
+devel@discuss.example.org  - automatic mailto
+
+mailto:devel@discuss.example.org[Discuss]
+mailto:lwpk110@163.com[邮件联系我]
+mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to join!]
+
+=== 带参数的超链接宏
+
+https://discuss.asciidoctor.org[Discuss Asciidoctor,role=external,window=_blank]
+
+https://discuss.asciidoctor.org[Discuss Asciidoctor^]
+
+=== url带特殊符号
+
+[.lead]
+如果链接文本包含逗号并且文本后跟一个或多个命名属性，则必须将文本括在双引号中。否则，文本将在逗号处被截断（并且剩余的文本将被拉入属性解析）
+
+link:++https://example.org/?q=[a b]++[URL with special characters]
+
+https://example.org/?q=%5Ba%20b%5D[URL with special characters]
+
+=== 链接相对路径的文件
+
+link:index.html[Docs]
+
+===  链接到 Windows UNC path
+
+windows共享映射驱动器
+
+link:\\server\share\whitepaper.pdf[Whitepaper]
+
+=== 内联锚点
+
+[[bookmark-a]]
+Inline anchors make arbitrary content referenceable.
+
+[#bookmark-b]
+#Inline anchors can be applied to a phrase like this one.#
+
+anchor:bookmark-c[]Use a cross reference to link to this location.
+
+[[bookmark-d,last paragraph]]
+The xreflabel attribute will be used as link text in the cross-reference link.
+
+=== 单文档内交叉引用
+
+See <<_段落>> to learn how to write paragraphs.
+
+Learn how to organize the document into <<_段落,文字段落,硬换行>>.
+
+=== 文档间交叉引用
+
+Refer to xref:document-b.adoc#_fifth_level_heading[Section B of Document B] for more information.
+
+If you never return from xref:document-b.adoc[Document B], we'll send help.
+
+[discrete]
+=== I'm an independent heading!
+
+=== 文档块交叉应用
+
+[source]
+----
+.Topic Titel    <1>
+[[yourId]]      <2>
+[yourstyle]     <3>
+____
+Four score and seven years ago our fathers brought forth
+on this continent a new nation...
+
+Now we are engaged in a great civil war, testing whether
+that nation, or any nation so conceived and so dedicated,
+can long endure.
+____
+----
+<1> 块标题
+<2> 块的引用id
+<3> 块样式
+
+
+e.g.
+
+.块引用示例
+[[block_id]]
+[sss,dddd,  dfdfd]
+____
+Four score and seven years ago our fathers brought forth
+on this continent a new nation...
+
+Now we are engaged in a great civil war, testing whether
+that nation, or any n
+ation so conceived and so dedicated,
+can long endure.
+____
+
+
+<<block_id>>
+
+
+== 文档抬头
+
+[source]
+----
+= Document Title
+Author Name <author@email.org>
+v2.0, 2019-03-22
+:toc:
+:homepage: https://example.org
+
+This document provides...
+----
+
+important: 没有作者行就不能有修订行，顺序比较重要。
+
+=== 目录
+
+有 `toc` 属性才有 `toc-title`, `toclevels`  设置目录标题深度，`toc` 属性可以设置目录位置 auto, left, right, macro, preamble.
+
+[source]
+----
+= The Intrepid Chronicles
+Kismet Lee; B. Steppenwolf; Pax Draeke
+:toc:
+:toc-title: Table of Adventures
+:toclevels: 4
+
+== Certain Peril
+----
+
+== 文件包含
+
+TIP: There are five admonition labels: Tip, Note, Important, Caution and Warning.
+
+=== 内嵌文档所有内容
+
+Lead Developer
+
+This is documentation for project X.
+
+include::basics.adoc[]
+
+include::installation.adoc[]
+
+=== 按标签区域或行包含内容
+
+include::filename.txt[tag=snippets]
+
+include::filename.txt[lines=5..10]
+
+=== 包含来自 URL 的内容
+
+include::https://raw.githubusercontent.com/asciidoctor/asciidoctor/master/README.adoc[]
+
+=== 引用其它文档部分内容
+
+source code:
+
+    //article.adoc
+    # tag::tagname[]
+    This should be included!
+    # end::tagname[]
+    This text will not be included!
+
+do include:
+
+    include::article.adoc[tags=tagname]
+
+e.g.:
+
+include::filename.txt[tags=snippet-a]
+
+=== 包含图片
+    :imagesdir: ./img
+    image::vogellacompany.jpg[vogella Company]
+
+e.g.:
+
+image::fav.png[cnm]
+
+添加宏指令：
+
+image::fav.png[cnm, width=5%] to show inline images.
+
+=== 按照条件包含
+可以基于文档属性或基于文档属性的值包含或排除文本。可以使用属性 ifdef、ifndef 和 ifeval 来实现这一点。
+
+要包含内容，如果设置了属性 `exercise_solution`，请使用以下语法 `ifdef` ：
+[source, asciidoc]
+----
+:exercise_solution:
+ifdef::exercise_solution[]
+Content is shown when test attribute is set
+endif::exercise_solution[]
+
+or
+
+ifdef::exercise_solution[Content is shown when include attribute is set]
+----
+
+要在未设置属性 `exercise_solution` 时包含内容，请使用以下语法 `ifndef`：
+
+
+ifndef::exercise_solution[]
+Content is shown when test attribute is NOT set
+endif::exercise_solution[]
+OR
+ifndef::test[Content is shown when test attribute is NOT set]
+
+也可以使用多个属性。如果属性名称由 ,（逗号）分隔，则只需设置其中一个属性满足。如果它们以 +（加号）分隔，则所有属性都必须同时满足。
+
+e.g. :
+冒号(`,`)满足任意一个即可显示： +
+ifdef::exercise_solution,test-condition1[]
+Content is shown when test attribute is set
+endif::exercise_solution,test-condition1[]
+
+加号(`+`)满足任意一个不可显示： +
+ifdef::exercise_solution+test-condition1[]
+Content is shown when test attribute is set
+endif::exercise_solution+test-condition1[]
+
+使用 `ifeval` 属性可以判断属性的值。如果表达式为真，则内容包含在文档中，否则不包含。
+
+    :version: 1
+    ifeval::[{version} >= 1]
+    This is a good one!
+    endif::[]
+    ifeval::[{version} < 1]
+    Work in process
+    endif::[]
+
+e.g.:
+
+ifeval::[{test-condition2} >= 1]
+test-condition2 == 1 所以显示这段文字
+endif::[]
+
+ifeval::[{test-condition2} < 1]
+test-condition2 == 1 所以不显示这段文字
+endif::[]
+
+== list列表
+=== 无序列表
+* Level 1 list item
+** Level 2 list item
+*** Level 3 list item
+**** Level 4 list item
+***** Level 5 list item
+* Level 1 list item
+
+=== 有序列表
+
+. Level 1 list item
+.. Level 2 list item
+... Level 3 list item
+... Level 3 list item
+.... Level 4 list item
+..... Level 5 list item
+..... Level 5 list item
+. Level 1 list item
+
+=== checkBox 列表
+* [*] checked
+* [x] also checked
+* [ ] not checked
+* normal list item
+
+
+=== 描述列表
+First term:: The description can be placed on the same line
+as the term.
+Second term::
+Description of the second term.
+The description can also start on its own line.
+
+=== 问答列表
+[qanda]
+What is the answer?::
+This is the answer.
+
+Have you seen my duck?::
+No.
+
+=== 混合列表
+Operating Systems::
+Linux:::
+. Fedora
+* Desktop
+. Ubuntu
+* Desktop
+* Server
+BSD:::
+. FreeBSD
+. NetBSD
+
+Cloud Providers::
+PaaS:::
+. OpenShift
+. CloudBees
+IaaS:::
+. Amazon EC2
+. Rackspace
+.An example
+
+
+=== 复杂内容列表
+* Every list item has at least one paragraph of content,
+which may be wrapped, even using a hanging indent.
++
+Additional paragraphs or blocks are adjoined by putting
+a list continuation on a line adjacent to both blocks.
++
+list continuation:: a plus sign (`{plus}`) on a line by itself
+
+* A literal paragraph does not require a list continuation.
+
+    $ cd projects/my-book
+
+* AsciiDoc lists may contain any complex content.
++
+|===
+|Column 1, Header Row |Column 2, Header Row
+
+|Column 1, Row 1|Column 2, Row 1
+|Column 2, Row 1|Column 2, Row 2
+|===
+
+=== 列表附加元素
+
+通过在与两个块相邻的行上放置加号 (+)，附加段落、块、图像、源代码等与列表元素相邻。
+
+* Listing1
+* Listing2
++
+image::fav.png[]
++
+[source. json]
+----
+{"key":"1"}
+----
+* listing3
+
+== Table
+.基本用法
+|===
+|Name of Column 1 |Name of Column 2
+
+|Cell in column 1, row 1
+|Cell in column 2, row 1
+
+|Cell in column 1, row 2
+|Cell in column 2, row 2
+|===
+
+.相对宽度1：3
+[cols="1,3",options="header"]
+|===
+| Name | Description
+| Testing
+| Table width
+|===
+
+NOTE: [cols="1,3"] 声明可用于指定列的宽度。如果设置了宽度，则还必须像这样设置 option="header"： [cols="1,3",options="header"] 以便将表格的第一行视为标题。
+
+TIP: 或者，可以使用 % 值，例如 [cols="40%, 60%"]。
+
+
+为了在表格单元格中添加特殊的 `asciidoc` 元素作为列表、注释、源代码等，只需在 `|` 之前添加一个 `a` 。某些元素，如键盘快捷键 (`kbd`) 和按钮 (`btn`) 不需要在表格中进行特殊定义。这看起来像这样：
+
+.with asciidoc elements
+|===
+|Keyboard shortcut |List |Note |Button
+
+|kbd:[Ctrl+9]
+a|* Test 1
+* Test 2
+* Test 3
+a|
+[NOTE]
+====
+This is a good idea
+====
+|btn:[OK]
+
+|===
+
+== 源代码
+
+=== 源代码注释
+[source,java]
+----
+System.out.println("Hello");  # <.>
+private int a;
+----
+<.> Imports the library
+
+[source, xml]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+
+  <modelVersion>4.0.0</modelVersion>  <1>
+
+  <groupId>com.vogella.maven.first</groupId>
+  <artifactId>com.vogella.maven.first</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>com.vogella.maven.first</name>
+
+</project>
+
+----
+<1> Comment for the above
+
+=== 源代码高亮
+可以通过在文档标题中设置 source-highlighter 属性来使用语法高亮。
+
+    :source-highlighter: pygments
+
+html 样式的有效选项是 `coderay`、`highlightjs`、`prettify` 和 `pygments`。对于 pfd 样式 `coderay`，`rouge` 和 `pygments` 可用。
+
+`coderay`、`rouge` 和 `pygments` 使用嵌入式 css 样式，该样式将在输出转换期间添加到 `*.adoc` 文件的文件夹中。在这种情况下，必须在文档标题中设置属性 `include::../10_Include/settings.adoc[]`。 `highlightjs` 和 `prettify` 使用 `javascript`。
+
+对于 `pygments`、`highlightjs`、`prettify`，有多种不同的样式/主题。
+
+要使用 `pygment` 样式，请将以下属性添加到文档标题：
+
+    :pygments-style: xcode
+
+如果不设置 `pygment-style` 属性，将使用默认样式。 +
+要查看所有可用 `pygments` 样式的列表，请在命令行中执行： `pygmentize -L` 样式。
+
+对于 `hightlightjs`，样式称为主题，可以按如下方式添加到文档标题中：
+
+ :highlightjs-theme: xcode
+
+=== 转义
+
+如果您需要转义 Asciidoc 命令，您可以在通常由 Asciidoc 解释的字符之前使用 `\` 。以写为例 `|` 你需要这样写：`\|`。
+
+((((Big cats)))
+
+((((Big cats, Lions)))
+
+=== 高亮指定行
+
+https://docs.asciidoctor.org/asciidoc/latest/verbatim/highlight-lines/[参考官方文档]
+
+.常规
+[source,ruby]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+
+.显示行号
+[source%linenums,ruby]
+----
+ORDERED_LIST_KEYWORDS = {
+  'loweralpha' => 'a',
+  'lowerroman' => 'i',
+  'upperalpha' => 'A',
+  'upperroman' => 'I',
+}
+----
+
+== 图像
+
+NOTE: TODO...
+[#img-sunset]
+.A mountain sunset
+[link=https://www.flickr.com/photos/javh/5448336655]
+image::fav.png[Sunset,200,100]
+
+image::fav.png[200,200]
+
+image::fav.png[cnm,pdfwidth=40%]
+
+
+== 影音
+NOTE: TODO...
+
+== 图标
+启用图标
+
+[source]
+-----------
+= Document Title
+:icons:
+-----------
+
+=== image icon mode
+默认图标目录在 `./images/icons`,默认图标类型 `.png`, 默认图标以小写命名。如 `NOTE` 以 `note.png` 作为图标.
+
+属性设置
+[source]
+----
+= Document Title
+:icons: image
+:iconsdir: ./images/icons
+:icontype: svg
+----
+
+=== font icon model
+https://docs.asciidoctor.org/asciidoc/latest/macros/icons-font/[参考资料]
+
+=== icon 宏
+
+* 对于 `icon:font`::
+
+icon:heart[2x,role=red] +
+icon:tags[] ruby, asciidoctor  +
+icon:fa[role=yellow] ok  +
+icon:download[link=https://rubygems.org/downloads/whizbang-1.0.0.gem, window=_blank]
+
+[%hardbreaks]
+icon:bolt[fw] bolt
+icon:heart[fw] heart
+icon:shield[rotate=90, flip=vertical]
+icon:comment[] This is a comment icon
+icon:file[] And a file icon
+icon:battery-full[] And a battery icon
+
+== 键盘宏
+
+IMPORTANT:  必须首先启用 `experimental` 属性。
+
+|===
+|快捷键 |作用
+
+|kbd:[F11]
+|Toggle fullscreen
+
+|kbd:[Ctrl+T]
+|Open a new tab
+
+|kbd:[Ctrl+Shift+N]
+|New incognito window
+
+|kbd:[\ ]
+|Used to escape characters
+
+|kbd:[Ctrl+\]]
+|Jump to keyword
+
+|kbd:[Ctrl + +]
+|Increase zoom
+|===
+
+== 按钮，菜单宏
+
+IMPORTANT:  必须首先启用 `experimental` 属性。
+
+Press the btn:[OK] button when you are finished.
+
+Select a file in the file navigator and click btn:[Open].
+
+To save the file, select menu:File[Save].
+
+Select menu:View[Zoom > Reset] to reset the zoom level to the default setting.
+
+== 告警
+启用告警显示icon
+[source]
+----
+= Document Title
+:icons: font
+----
+
+Asciidoctor 提供了五个警告样式标签:
+[%hardbreaks]
+* NOTE
+* TIP
+* IMPORTANT
+* CAUTION
+* WARNING
+
+i.g.:
+
+WARNING: 众所周知，Wolpertingers 会嵌套在服务器中,请知晓风险！！
+
+=== 警告块语法
+
+[IMPORTANT]
+.Feeding the Werewolves
+====
+While werewolves are hardy community members, keep in mind the following dietary concerns:
+
+. They are allergic to cinnamon.
+. More than two glasses of orange juice in 24 hours makes them howl in harmony with alarms and sirens.
+. Celery makes them sad.
+====
+
+=== 为告警显示emoji
+
+* unicode 字形emoji
+
+:tip-caption: 💡
+
+[TIP]
+It's possible to use Unicode glyphs as admonition icons.
+
+*  代码emoji
+
+:tip-caption: pass:[&#128161;]
+
+[TIP]
+It's possible to use Unicode glyphs as admonition icons.
+
+* github
+ifdef::env-github[]
+:tip-caption: :bulb:
+endif::[]
+
+[TIP]
+It's possible to use emojis as admonition icons on GitHub.
+
+== 侧边栏
+[sidebar]
+Sidebars are used to visually separate auxiliary bits of content
+that supplement the main text.
+
+=== 复杂语法块
+.Optional Title
+****
+Sidebars are used to visually separate auxiliary bits of content
+that supplement the main text.
+
+TIP: They can contain any type of content.
+
+.Source code block in a sidebar
+[source,js]
+----
+const { expect, expectCalledWith, heredoc } = require('../test/test-utils')
+----
+****
+
+
+== 块
+
+=== 块标题
+
+.Mint
+[sidebar]
+Mint has visions of global conquest.
+If you don't plant it in a container, it will take over your garden.
+
+=== 使用分隔符构建块
+Text in your document.
+
+****
+This is content in a sidebar block.
+
+image::images/icons/note.png[]
+
+This is more content in the sidebar block.
+****
+
+=== 使用块样式属性构建块
+
+以下是代码样式：
+include::block-name-table.adoc[]
+
+
+==== 块例子
+
+* example
+
+[example]
+====
+
+例子正文
+====
+
+
+
+
+* Paragraph
+
+段落1ddddddddddddddddddddddddd
+
+段落22222222222222222222222222
+
+* Literal paragraph
+
+ Literal paragraph
+
+* Admonition
+
+[NOTE]
+====
+SSS
+====
+
+* Comment
+
+////
+注释不显示
+////
+
+* Fenced
+```
+源代码
+```
+
+* Listing
+
+[listing]
+----
+sudo dnf install asciidoc
+sudo dnf install asciidoc
+111
+----
+
+
+* literal
+
+[literal]
+          {
+    "不规则的json格式": "value"
+}
+
+* Open
+
+比较重要
+
+--
+不知道什么玩意
+
+[literal]
+{
+"不规则的json格式": "value"
+}
+////
+注释不显示
+////
+--
+
+* Passthrough
+
+[pass]
+++++
+image::images/icons/note.png[]
+
+这是原始内容，没有经过asciidoc处理过的内容
+* 123 +
+image::images/icons/note.png[]
+++++
+
+* Sidebar
+
+[sidebar]
+****
+这是什么东西
+****
+
+* Source
+
+[source,java]
+----
+public class RabbitHealthIndicator extends AbstractHealthIndicator {
+
+	private final RabbitTemplate rabbitTemplate;
+
+	public RabbitHealthIndicator(RabbitTemplate rabbitTemplate) {
+		super("Rabbit health check failed");
+		Assert.notNull(rabbitTemplate, "RabbitTemplate must not be null");
+		this.rabbitTemplate = rabbitTemplate;
+	}
+}
+----
+
+* stem
+
+[stem]
+++++
+\sum  数学公式
+++++
+
+* Table
+
+|===
+|h1|h2
+
+|r1c1
+|r1c2
+
+|r2c1
+|r2c2
+|===
+
+* verse
+
+[verse, Carl Sandburg, Fog]
+____
+The fog comes
+on little cat feet.
+
+It sits looking
+over harbor and city
+on silent haunches
+and then moves on.
+____
+
+
+=== 块id
+
+您可以使用属性列表为任何块分配 ID。为块分配 ID 后，您可以使用该 ID 通过交叉引用链接到它。
+
+[quote#roads,Dr. Emmett Brown,Back to the Future]
+Roads? Where we're going, we don't need roads.
+
+<<roads, roads>>
+
+
+
+[chart,pie,file="secim-2014-pie.png",opt="title=饼图标题"]
+--
+AKP,  45.6, orange
+CHP,  27.8,red
+MHP,  15.2
+BDP,  4.2
+SP,  2
+--
+
+== 标注
+
+ .MS-DOS directory listing
+ -----------------------------------------------------
+ 10/17/97   9:04         <DIR>    bin
+ 10/16/97  14:11         <DIR>    DOS            <1>
+ 10/16/97  14:40         <DIR>    Program Files
+ 10/16/97  14:46         <DIR>    TEMP
+ 10/17/97   9:04         <DIR>    tmp
+ 10/16/97  14:37         <DIR>    WINNT
+ 10/16/97  14:25             119  AUTOEXEC.BAT   <2>
+  2/13/94   6:21          54,619  COMMAND.COM    <2>
+ 10/16/97  14:25             115  CONFIG.SYS     <2>
+ 11/16/97  17:17      61,865,984  pagefile.sys
+  2/13/94   6:21           9,349  WINA20.386     <3>
+ -----------------------------------------------------
+
+ <1> This directory holds MS-DOS.
+ <2> System startup code for DOS.
+ <3> Some sort of Windows 3.1 hack.
+
+[source, json]
+----
+{
+  "key": "1"      <1>
+}
+----
+<1> ssss
+
+== 索引
+您可以通过 (((yourterm))) 将主要索引词添加到您的文档中。二级索引可以通过 (((yourterm, secondary term2))) 添加到您的文档中。例如：
+
+((((Big cats)))
+
+((((Big cats, Lions)))
+
+== 折叠
+
+[source]
+----
+.Title
+[%collapsible]
+====
+这是折叠以后的内容
+====
+----
+
+.折叠
+[%collapsible]
+====
+这是折叠以后的内容
+====
+
+== 使用 Asciidoctor 进行转换
+
+要转换 asciidoc 文件，您需要安装 Asciidoctor gem。
+
+ gem install  asciidoctor
+
+如果您希望能够创建 pdf 文件，您可以使用 asciidoctor-pdf gem。
+
+ gem install --pre asciidoctor-pdf
+
+=== html
+
+ asciidoctor *.adoc -D html
+
+[[asciidoctor-pdf]]
+
+=== pdf
+
+ asciidoctor-pdf example.adoc
+
+# tag::asciidoctor-pdf[]
+转pdf 时，容易出现中文乱码的情况，这一般是转换器没有字体的原因。使用以下步骤可解决中文乱码的问题:
+
+. 找到 `asciidoctor-pdf` 的安装目录，使用gem安装
++
+[source]
+----
+$ whereis asciidoctor-pdf           #<.>
+asciidoctor-pdf: /data/home/luwei/gems/bin/asciidoctor-pdf
+$ ls /data/home/luwei/gems/gems | grep asciidoctor-pdf #<.>
+asciidoctor-pdf-1.6.1
+----
+<.> 寻找 `asciidoctor-pdf`的大概位置；
+<.> 找到 `asciidoctor-pdf` 的具体安装位置.
+. 将 `asciidoctor-pdf` 默认主题配置文件copy出来；
++
+  cp /data/home/luwei/gems/gems/asciidoctor-pdf-1.6.1/data/themes/default-theme.yml ~/Desktop
+
+. 将拷贝出来的 `default-theme.yml` 文件放到 源码根目录的 `themes/` 目录下；
++
+[source,text]
+----
+.
+├── attributes.adoc
+├── basics.adoc
+├── block-name-table.adoc
+├── document-b.adoc
+├── filename.txt
+├── first.adoc
+├── first.html
+├── first.pdf
+├── fonts                           #<.>
+│   ├── BOOKOSBI.TTF
+│   ├── BOOKOSB.TTF
+│   ├── BOOKOSI.TTF
+│   ├── BOOKOS.TTF
+│   ├── NotoSerifCJK-Bold.ttc
+│   └── NotoSerifCJK-Regular.ttc
+├── images
+│   ├── fav.png
+│   └── icons
+├── index.html
+├── installation.adoc
+├── official.adoc
+└── theme                       #<.>
+└── default-theme.yml
+----
+<1> 字体文件目录;
+<2> 主题配置文件目录；
+
+. 将 `常规字体`,`bold`， `italic` `bold-italic` 等字体放到根目录的 `fonts` 文件夹.
+. 修改 `themes/default-theme.yml`
++
+[source,yaml]
+----
+font:
+  catalog:
+    Noto Serif:                           #<.>
+      normal: NotoSerifCJK-Regular.ttc    #<.>
+      bold: NotoSerifCJK-Bold.ttc         #<.>
+      italic: NotoSerifCJK-Regular.ttc    #<.>
+      bold_italic: NotoSerifCJK-Bold.ttc  #<.>
+...
+base:
+  font_family: Noto Serif                 #<.>
+...
+literal:
+  font_family: Noto Serif                 #<.>
+....
+
+----
+<.> 字体名称;
+<.> 字体常规体;
+<.> 字体黑体;
+<.> 字体斜体;
+<.> 字体粗斜体;
+<.> 默认字体;
+<.> 文本字体;
+
+. 执行生成pdf命令，应用主题和中文字体;
++
+ asciidoctor-pdf first.adoc -a pdf-style=theme/default-theme.yml -a pdf-fontsdir=fonts
+
+CAUTION: 中文 `斜体` 和 `粗斜体` 未找到。
+
+# end::asciidoctor-pdf[]
+
+== docinfo
+
+您可以使用 docinfo 文件将自定义内容添加到输出文档的页眉、页眉或页脚。 Docinfo 文件可用于将辅助metadata, stylesheet, and script注入转换器未添加的输出中。
+
+docinfo 功能不适用于所有后端。虽然它在转换为 HTML 和 DocBook 等输出格式时有效，但在使用 Asciidoctor PDF 转换为 PDF 时不起作用。
+
+必须使用 docinfo 属性显式启用 docinfo 功能（请参阅启用 docinfo）。使用哪些 docinfo 文件取决于 docinfo 属性的值以及后端。
+
+IMPORTANT:
+
+=== Head docinfo files
+
+
+
+
+
+
+
+
+
+
+
