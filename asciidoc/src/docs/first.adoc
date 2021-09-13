@@ -1,6 +1,5 @@
 = Asciidoc 简易指南
 include::attributes.adoc[]
-Author Name <author@email.org>
 v2.0, 2019-03-22
 :toc: left
 :icons: font
@@ -11,6 +10,7 @@ v2.0, 2019-03-22
 :imagesdir: ./images
 //:exercise_solution:
 :test-condition1:
+:version:
 :test-condition2: 1
 :source-highlighter: coderay
 

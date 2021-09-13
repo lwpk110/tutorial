@@ -1,10 +1,11 @@
 plugins {
-    id 'org.asciidoctor.convert' version '1.5.3'
+    id 'org.springframework.boot' version '2.5.4'
 }
 
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
+    apply plugin: 'io.spring.dependency-management'
 }
 
 subprojects {
@@ -12,6 +13,14 @@ subprojects {
 
     sourceCompatibility = 11
     targetCompatibility = 11
+
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+        }
+    }
 
     tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
 
