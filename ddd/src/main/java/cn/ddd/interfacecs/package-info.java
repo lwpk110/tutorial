@@ -16,4 +16,4 @@
  * </p>
  *
  */
-package cn.ddd.interfacec;
+package cn.ddd.interfacecs;

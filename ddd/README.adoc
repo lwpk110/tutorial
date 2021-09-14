@@ -5,10 +5,10 @@
 :toclevels: 4
 :tabsize: 4
 :numbered:
+:source-highlighter: coderay
 :origin-blog: https://www.baeldung.com/hexagonal-architecture-ddd-spring
 :github-source: Finally, we swapped the application and infrastructure layers without impacting the domain.
 
-As always, the code for these examples is available over on GitHub.
 
 == 六边形架构
 
@@ -386,5 +386,52 @@ image::DDD-Layers-implemented.webp[]
 与往常一样，这些示例的代码可在 GitHub 上找到。
 
 
+== 其它参考
 
+=== 流行分包之一
+
+image::package1.png[]
+image::package2.png[]
+
+. DDD：application应用层
++ 
+相对于领域层，应用层是很薄的一层，应用定义了软件要完成的任务，要尽量简单  +
+它不包含任何业务规则或只是，为下一层的领域对象协助任务、委托工作。  +
+它没有反应业务情况的状态，但他可以具有反应用户或程序的某个任的进展状态.
++
+.. 负责上下文协调，对外为展现层提供各种应用应用功能（service）.
+.. 对内调用领域层（领域对象或领域服务）完成各种业务逻辑任务（event）。
++
+这一层也很适合写一些任务处理、日志监控。
+
+. DDD：domain 领域层
++
+领域层主要负责表达业务概念、业务状态信息和业务规则。 +
+Domain层是整个系统的核心层，几乎全部的业务逻辑会在该层实现。 +
+领域模型层主要包含以下的内容：
++
+.. 实体（entity）：具有唯一标识的对象。
+.. 值对象（value object）：无需唯一标识的对象。
+.. 领域服务（service）：一些行为无法归类到实体对象或者值对象上，本质是一些操作，而非事务
+
+. DDD：infrastructure 基础设施层，最底层（但与所有底层进行交互）
++
+向其他层提供通用的技术能力（比如工具类、第三方库类支出、常用的基本配置、数据访问底层实现） +
+基础实施层主要包含以下内容：
++
+.. 为应用层传递消息
+.. 为领域层提供持久化机制
+.. 为用户界面层提供组件配置
+.. 基础设施层还可以通过架构框架来支持四个层次间的交互模式。
+
+. DDD：interface 用户界面层（或表示层） 最顶层。
++
+负责向用户显示信息和解释用户命令。 +
+请求应用层以获取用户所需要展现的数据（比如获取应用系统数据）。 +
+发送命令给应用层要求其执行某个用户命令（实现某个业务逻辑，比如用户新增应用系统）。  +
+用户界面层包含以下内容：
++
+.. 数据传输对象（data transfer object）：DTO也被常称作值对象，是数据传输的载体，内部不应该存在任何业务逻辑， 通过DTO把内部的领域对象与外界隔离。
+.. 装配（assembler）：实现DTO与领域对象之间的相互转换、数据交换，因此assembler几乎总是同DTO一起出现。
+.. 表面，门面（facade）:facade的用意在于为远程客户端提供粗粒度的调用接口，它的主要工作就是将一个用户请求委派给一个或者多个service进行处理，也是常用的controller。
 

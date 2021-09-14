@@ -14,4 +14,4 @@
  *  </ul>
  * </p>
  */
-package cn.ddd.infrastruction;
+package cn.ddd.infrastracture;
