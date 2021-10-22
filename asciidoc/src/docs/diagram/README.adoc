@@ -1,0 +1,283 @@
+[[diagram_tutorial]]
+= 图表
+include::attrabute.adoc[]
+
+== asciidoctor-diagram
+
+=== examples
+
+相关示例请参阅 <<asciidoctor-diagram-exam#asciidoctor-diagram-exam>>
+
+== asciidoctor-kroki
+
+资料：
+
+* asciidoctor-kroki https://github.com/mogztter/asciidoctor-kroki[官方文档]
+* kroki io https://https://kroki.io/[官方文档]
+
+=== position 属性
+
+* 使用代码块时：
++
+. 第一个位置属性指定图表类型（完整列表见下文）。
+. 第二个可选的位置属性为生成的图表分配一个文件名（即目标）。目前，该属性的值被忽略，自动生成的哈希将用作缓存目的的文件名（参见 48）。
+. 第三个可选的位置属性指定图像格式。例子：
++
+    [mermaid,abcd-flowchart,svg]
+    ....
+    graph TD;
+        A-->B;
+        A-->C;
+        B-->D;
+        C-->D;
+    ....
+
+* 使用宏表时：
++
+第一个可选的位置属性指定图像格式。
++
+Example:
++
+    vegalite::chart.vlite[svg]
++
+上例中，图表类型为vegalite，目标为chart.vlite，图片格式为svg。
+
+=== Named 属性
+
+您还可以同时使用位置和命名属性。下面是一个例子：
+
+.PlantUML example
+[plantuml#diagAliceBob,alice-and-bob,svg,role=sequence]
+....
+alice -> bob
+....
+
+如您所见，我们在图表类型之后使用语法 diagAliceBob 指定了一个 id，并且我们还使用命名属性来使用 role=sequence 分配角色。
+
+这是使用宏表单的另一个示例：
+
+    vegalite::chart.vlite[svg,role=chart,opts=interactive]
+
+我们使用一个position属性来声明图像格式，并使用两个named属性来定义 `角色` 和 `选项`。
+
+=== 属性列表
+
+需要注意的是，并非所有属性都用于所有转换器。以下是内置 HTML 5 转换器中使用的所有属性的列表：
+
+* target
+* width
+* height
+* format (default svg)
+* fallback
+* link
+* float
+* align
+* role
+
+=== option列表：
+
+此外，使用 SVG 格式时可以使用以下选项：
+
+* inline
+* interactive
+* none (used for cancelling defaults)
+
+可以使用 options 属性（或简称 opts）定义选项：
+
+    [blockdiag,opts=inline]
+    ....
+    blockdiag {
+      Kroki -> generates -> "Block diagrams";
+
+      Kroki [color = "greenyellow"];
+      "Block diagrams" [color = "pink"];
+    }
+    ....
+
+=== 支持的图表类型
+
+Kroki 目前支持以下图表库：
+
+* https://github.com/blockdiag/actdiag[ActDiag]: `actdiag`
+* https://github.com/blockdiag/blockdiag[BlockDiag]: `blockdiag`
+* https://github.com/bpmn-io/bpmn-js[BPMN]: `bpmn`
+* https://github.com/Deep-Symmetry/bytefield-svg/[Bytefield]: `bytefield`
+* https://github.com/RicardoNiepel/C4-PlantUML[C4 (PlantUML)]: `c4plantuml`
+* http://ditaa.sourceforge.net[Ditaa]: `ditaa`
+* https://github.com/BurntSushi/erd[ERD]: `erd`
+* https://github.com/excalidraw/excalidraw[Excalidraw]: `excalidraw`
+* https://www.graphviz.org/[GraphViz]: `graphviz`
+* https://github.com/knsv/mermaid[Mermaid]: `mermaid`
+* https://github.com/skanaar/nomnoml[Nomnoml]: `nomnoml`
+* https://github.com/blockdiag/nwdiag[NwDiag]: `nwdiag`
+* https://github.com/blockdiag/nwdiag[PacketDiag]: `packetdiag`
+* https://github.com/drhsqlite/pikchr[Pikchr]: `pikchr`
+* https://github.com/plantuml/plantuml[PlantUML]: `plantuml`
+* https://github.com/blockdiag/nwdiag[RackDiag]: `rackdiag`
+* https://github.com/blockdiag/seqdiag[SeqDiag]: `seqdiag`
+* https://github.com/ivanceras/svgbob[SVGBob]: `svgbob`
+* https://github.com/umlet/umlet[UMLet]: `umlet`
+* https://github.com/vega/vega[Vega]: `vega`
+* https://github.com/vega/vega-lite[Vega-Lite]: `vegalite`
+* https://github.com/wavedrom/wavedrom[WaveDrom]: `wavedrom`
+* https://github.com/structurizr/dsl[Structurizr]: `structurizr`
+
+每个图表库都支持一种或多种输出格式。请查阅 https://kroki.iosupport[Kroki 文档] 以了解支持哪些格式。
+
+=== 相关配置
+|====
+| 属性 name        | 描述 | 默认值
+
+| `kroki-server-url`    | Kroki 服务器的 URL (see "Using Your Own Kroki") | `https://kroki.io`
+| `kroki-fetch-diagram`     | 定义我们是否应该从 Kroki 服务器下载（并保存在磁盘上）图像。 +
+在浏览器中运行时，此功能不可用。 | `false`
+| `kroki-http-method` a| 定义我们应该如何从 Kroki 服务器获取图像。可能的值： +
+
+* `get`: 始终使用 GET 请求
+* `post`: 始终使用 POST 请求
+* `adaptive`: 如果 URI 长度超过 `kroki-max-uri-length`（默认 4000）字符，则使用 POST 请求，否则使用 GET 请求 | `adaptive`
+| `kroki-plantuml-include` | 将包含在所有 PlantUML 图顶部的文件，就像使用了“!include file”一样。当您想为所有图表定义一个通用皮肤时，这会很有用。该值可以是路径或 URL。|
+| `kroki-plantuml-include-paths` | 将用于将 `!include file` 解析到当前图表目录的搜索路径，类似于 PlantUML 属性(https://plantuml.com/de/preprocessing[plantuml.include.path])。请使用目录分隔符 `;` (Windows) 或 `:` (Unix) 表示多个路径，例如：`"c:/docu/styles;c:/docu/library"` 或 `"~/docu/styles:~/docu/library"` |
+| `kroki-max-uri-length` | 在使用 `adaptive` HTTP 方法（`kroki-http-method`）时，在使用 POST 请求之前定义最大 URI 长度 | `4000`
+|====
+
+
+IMPORTANT: `kroki-fetch-diagram` 和 `kroki-plantuml-include` 仅在安全模式为 `server` 或更低版本时可用。如果您想了解有关 Asciidoctor 安全模式的更多信息： https://docs.asciidoctor.org/asciidoctor/latest/safe-modes/
+
+**默认配置：**
+
+默认情况下，图像尽可能生成为 SVG。要更改此设置，请设置 kroki-default-format 属性：
+
+    :kroki-default-format: png
+
+您可以使用 :kroki-default-format!: 或 :kroki-default-format: svg 取消设置。
+
+NOTE: AsciiDoc 属性可以通过 CLI 或 API 在文档的标题或文档正文中定义。此外，如果您使用的是 Antora，您可以在您的剧本和/或组件描述符中定义 AsciiDoc 属性。
+
+参考：
+
+* https://asciidoctor.org/docs/user-manual/#setting-attributes-on-a-document
+* https://docs.antora.org/antora/2.3/page/attributes/#custom-attributes
+
+
+默认情况下，Asciidoctor Kroki 会生成一个链接，指向 Kroki 服务器或本地文件。要更改 SVG 图的默认值，请设置 kroki-default-options 属性。
+
+    :kroki-default-options: inline
+
+您可以使用 :kroki-default-options: none 或 :kroki-default-options!: 取消设置，或者在块或宏中指定 opts=none 。
+
+=== 使用自己的kroki 服务器
+
+默认情况下，此扩展发送信息并从 https://kroki.io 接收图表。
+
+由于以下原因，您可以选择使用自己的服务器：
+
+* 网络限制 - 如果 Kroki 在您的公司防火墙后面不可用
+* 网络延迟 - 你离欧洲公共场合很远
+* 隐私 - 您不想将图表发送到 Internet 上的远程服务器
+
+这是使用 `kroki-server-url` 属性完成的。通常，这是在文档的顶部（在标题下）：
+
+    :kroki-server-url: http://my-server-url:port
+
+例如，如果您按照说明使用 Docker 设置自我管理的服务器，则可以使用以下内容：
+
+    :kroki-server-url: http://localhost:8080
+
+请注意，需要 http: 或 https: 前缀（默认 Docker 映像仅使用 http）。
+
+您还可以使用 Javascript API 设置此属性，例如：
+[source,javascript]
+----
+asciidoctor.convertFile('file.adoc', { safe: 'safe', attributes: { 'kroki-server-url': 'http://my-server-url:port' } })
+----
+
+=== examples
+
+<<asciidoctor-kroki-exam#asciidoctor-kroki-exam,asciidoctor-kroki例子>>
+
+
+== Asciidoctor-Chart
+// Aliases:
+:project-name: Asciidoctor Chart
+:project-handle: asciidoctor-chart
+// Variables:
+:release-version: 1.0.0.alpha.1
+:uri-repo: https://github.com/asciidoctor/asciidoctor-chart
+// Settings:
+:idprefix:
+:idseparator: -
+
+image:https://github.com/asciidoctor/asciidoctor-chart/workflows/Ruby/badge.svg[link=https://github.com/asciidoctor/asciidoctor-chart/actions?query=workflow%3ARuby]
+
+一组 Asciidoctor 扩展，添加 chart 代码块和宏，用于在您的 AsciiDoc 文档中，包含由 https://c3js.org[C3.js]、 https://gionkunz.github.iochartist-js[Chartist] 或 https://www.chartjs.org[Chart.js] 提供支持的图表 。
+
+[#要求]
+=== 要求
+
+所需要的只是 Ruby 2.5 或更高版本（或 JRuby 9.2 或更高版本）和一些 Ruby gem（至少包括 Asciidoctor 2.0.0），我们将在下一节中解释如何安装。
+
+要检查您是否有 Ruby 可用，请使用 `ruby` 命令查询安装的版本：
+
+ $ ruby -e 'puts RUBY_VERSION'
+
+确保此命令报告的 Ruby 版本至少为 2.5。如果是这样，您可以继续。
+
+=== Getting Started
+
+你可以通过 <<安装已发布的 Gem,安装已发布的 gem>> 获取 {project-name} .
+
+如果您想使用开发版本或参与开发，也可以从源代码运行代码
+
+=== 安装已发布的 Gem
+
+安装 {project-name},首先确保您已满足<<要求,prerequisites>>.
+然后，使用以下命令从 RubyGems.org 安装 gem：
+
+ $ gem install asciidoctor-chart --pre
+
+=== 启用扩展
+
+假设所有必需的 gem 安装正确，您可以使用 Asciidoctor CLI 中的 `--require` 选项（或简称 `-r`）启用扩展：
+
+ $ asciidoctor --require asciidoctor-chart my-doc.adoc
+
+=== 用法
+
+由声明为代码块的 C3.js（默认）提供支持的折线图::
+
+----
+[chart,line]
+....
+January,February,March,April,May,June,July
+28,48,40,19,86,27,90
+65,59,80,81,56,55,40
+....
+----
+
+[chart,line]
+....
+January,February,March,April,May,June,July
+28,48,40,19,86,27,90
+65,59,80,81,56,55,40
+....
+
+由 Chart.js 提供支持的折线图，在宏中以 CSV 文件为数据源： +
+
+----
+chart::sample-data.csv[line,engine="chartjs"]
+----
+
+chart::sample-data.csv[line,engine="chartjs"]
+
+更多示例，详见 <<asciidocotor-chart-exam#chart-block-macro-extension>>
+
+== 文档生成html
+
+本文档 依赖 `asciidoctor-diagram` 和 `asciidoctor-chart` 两个依赖， 可以使用 gem 安装。
+
+另外 `asciidoctor-diagram` 插件  除 `plantuml`, `ditaa` 需要依赖java 环境外，其它需要另外安装外部工具，并放于系统path 路径中。 例如 `vega`,`vegalit` 需要使用node安装 vl2vg / vg2png / vg2svg。具体对应的工具列表请参阅 https://docs.asciidoctor.org/diagram-extension/latest/#specifying-diagram-generator-paths[specifying-diagram-generator-paths]
+
+安装玩所需依赖后运行命令生成文档：
+
+    asciidoctor  -r asciidoctor-diagram -r asciidoctor-chart  *.adoc -D html

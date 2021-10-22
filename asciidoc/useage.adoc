@@ -1,0 +1,13 @@
+
+. cd 到 `src/main/docs`
+. 转化文档
++
+* 转html
++
+    asciidoctor *.adoc -D html <1>
++
+<1> 将该目录下的所有 `adoc` 转为html，并放到 `html`目录下. `-D html` 指定输出目录。
+
+* 转 pdf
+
+    asciidoctor *.adoc -D pdf

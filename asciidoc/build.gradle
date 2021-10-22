@@ -2,23 +2,11 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.1.0'
 }
 
-sourceSets{
-    docs {
-        java {
-            srcDirs("src/docs")
-        }
-    }
-}
-
 asciidoctor {
-    sourceDir  file('src/docs')
+    baseDirFollowsSourceDir()  // base dir默认 项目目录， 不设置这个将找不到include的应用目标，只会从项目根目录找起
+    sourceDir  file('./')
     sources {
-        include '*.adoc'
+        include '*.adoc', '**/*.adoc'
     }
     outputDir  file('html')
 }
-
-clean {
-    delete 'html'
-}
-

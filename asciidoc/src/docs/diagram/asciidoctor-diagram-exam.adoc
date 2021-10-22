@@ -1,0 +1,87 @@
+
+[[asciidoctor-diagram-exam]]
+= asciidoctor-diagram example
+include::attrabute.adoc[]
+
+== ditaa
+
+NOTE: ditaa,plantUml 依赖 java
+
+.ditaa example 1
+[ditaa]
+....
+                   +-------------+
+                   | Asciidoctor |-------+
+                   |   diagram   |       |
+                   +-------------+       | PNG out
+                       ^                 |
+                       | ditaa in        |
+                       |                 v
+ +--------+   +--------+----+    /---------------\
+ |        | --+ Asciidoctor +--> |               |
+ |  Text  |   +-------------+    |   Beautiful   |
+ |Document|   |   !magic!   |    |    Output     |
+ |     {d}|   |             |    |               |
+ +---+----+   +-------------+    \---------------/
+     :                                   ^
+     |          Lots of work             |
+     +-----------------------------------+
+....
+
+.ditaa with bg-color example 2
+[ditaa,target="ditaa-diagram", background="DC143C"]
+----
+<snip>
+----
+
+== smcat
+
+.smcat example 1
+[smcat,target="ditaa-diagram1"]
+----
+initial,
+doing: entry/ write unit test
+do/ write code
+exit/ ...,
+# smcat recognizes initial
+# and final states by name
+# and renders them appropriately
+final;
+
+initial      => "on backlog" : item adds most value;
+"on backlog" => doing        : working on it;
+doing        => testing      : built & unit tested;
+testing      => "on backlog" : test not ok;
+testing      => final        : test ok;
+----
+CAUTION: smcat 图表需要在 path中 安装 State Machine Cat 工具
+
+State Machine Cat 安装：
+
+    $ npm install --global state-machine-cat
+
+== plantuml
+
+.plantuml example 1
+[plantuml,target=diagram-plantuml1,format=png]
+....
+class BlockProcessor
+class DiagramBlock
+class DitaaBlock
+class PlantUmlBlock
+
+BlockProcessor <|-- DiagramBlock
+DiagramBlock <|-- DitaaBlock
+DiagramBlock <|-- PlantUmlBlock
+....
+
+== vega
+
+include::vega.adoc[]
+
+== vegalite
+
+.vegalite example1
+include::vegalit.adoc[Interactive,opts=interactive]
+
+CAUTION: vegalite 图表需要在 path中 安装 vl2vg / vg2png / vg2svg 工具,可以使用node安装

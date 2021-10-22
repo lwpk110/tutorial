@@ -1,11 +1,35 @@
-= ascii 教程文档
+= asciidoc 教程文档
+:!version-label:
+:idprefix:
 :idseparator: -
-:toc: preamble
+:toc: left
+:toclevels: 4
+:tabsize: 4
+:numbered:
+:sectanchors:
+:sectnums:
+:hide-uri-scheme:
+:docinfo: shared,private
+:attribute-missing: warn
+:chomp: default headers packages
+:spring-boot-artifactory-repo: snapshot
+:github-tag: main
 :icons: font
+
+== 语法简易指南
+
+AsciiDoc 是一种文本文档格式，用于编写笔记、文档、文章、书籍、电子书、幻灯片、网页、手册页和博客。AsciiDoc 文件可以翻译成多种格式，包括 HTML、PDF、EPUB、手册页。
+
+具体语法指南详见  xref:src/docs/tutorial.adoc[asciidoc 语法指南]
+
+== 图表
+
+目前 asciidoc 图表可采用 “asciidoctor-diagram”， "asciidoctor-kroki"， "asciidoctor-chart" 三种插件， 具体教程详见  xref:src/docs/diagram/README.adoc[asciidoctor 图表教程]
+
 
 == 转换文档
 
-目前有这 `asciidoctor` 和 `gradle-plugin` 两种方式可以将源文件（ `.adoc` ）转为 html 或者 pdf.
+目前有 `asciidoctor` 和 `gradle-plugin` 两种方式可以将源文件（ `.adoc` ）转为 html 或者 pdf.
 
 
 ===  Asciidoctor
@@ -18,21 +42,16 @@
 
  gem install --pre asciidoctor-pdf
 
-. cd 到 `src/main/docs`
-. 转化文档
-+
-* 转html
+==== 用法
 
-    asciidoctor *.adoc -D html <1>
+include::useage.adoc[]
 
-    <1> 将该目录下的所有 `adoc` 转为html，并放到 `html`目录下. `-D html` 指定输出目录。
+==== pdf 乱码问题
 
-* 转 pdf
-    asciidoctor *.adoc -D pdf
-
-=== pdf 乱码问题
-include::src/docs/first.adoc[tags=asciidoctor-pdf]
+include::src/docs/tutorial.adoc[tags=asciidoctor-pdf]
 
 === gradle plugin
+
+todo...
 
 

@@ -1,19 +1,6 @@
+[[Asciidoc_tutorial]]
 = Asciidoc 简易指南
 include::attributes.adoc[]
-v2.0, 2019-03-22
-:toc: left
-:icons: font
-:toc-title: Table of Adventures
-:homepage: https://example.org
-:experimental: true
-:favicon: images/icons/fav.png
-:imagesdir: ./images
-//:exercise_solution:
-:test-condition1:
-:version:
-:test-condition2: 1
-:source-highlighter: coderay
-
 
 ////
 :source-highlighter: pygments
@@ -193,6 +180,14 @@ If you never return from xref:document-b.adoc[Document B], we'll send help.
 [discrete]
 === I'm an independent heading!
 
+=== link
+
+ link 到原始文档
+
+=== xref
+
+link到编译后的文档
+
 === 文档块交叉应用
 
 [source]
@@ -275,8 +270,6 @@ This is documentation for project X.
 
 include::basics.adoc[]
 
-include::installation.adoc[]
-
 === 按标签区域或行包含内容
 
 include::filename.txt[tag=snippets]
@@ -292,9 +285,9 @@ include::https://raw.githubusercontent.com/asciidoctor/asciidoctor/master/README
 source code:
 
     //article.adoc
-    # tag::tagname[]
+    // tag::tagname[]
     This should be included!
-    # end::tagname[]
+    // end::tagname[]
     This text will not be included!
 
 do include:
@@ -367,13 +360,13 @@ endif::exercise_solution+test-condition1[]
 
 e.g.:
 
-ifeval::[{test-condition2} >= 1]
-test-condition2 == 1 所以显示这段文字
-endif::[]
-
-ifeval::[{test-condition2} < 1]
-test-condition2 == 1 所以不显示这段文字
-endif::[]
+//ifeval::[{test-condition2} >= 1]
+//test-condition2 == 1 所以显示这段文字
+//endif::[]
+//
+//ifeval::[{test-condition2} < 1]
+//test-condition2 == 1 所以不显示这段文字
+//endif::[]
 
 == list列表
 === 无序列表
@@ -1035,7 +1028,7 @@ SP,  2
 
  asciidoctor-pdf example.adoc
 
-# tag::asciidoctor-pdf[]
+// tag::asciidoctor-pdf[]
 转pdf 时，容易出现中文乱码的情况，这一般是转换器没有字体的原因。使用以下步骤可解决中文乱码的问题:
 
 . 找到 `asciidoctor-pdf` 的安装目录，使用gem安装
@@ -1120,9 +1113,11 @@ literal:
 
 CAUTION: 中文 `斜体` 和 `粗斜体` 未找到。
 
-# end::asciidoctor-pdf[]
+// end::asciidoctor-pdf[]
 
 == docinfo
+
+TODO: ....
 
 您可以使用 docinfo 文件将自定义内容添加到输出文档的页眉、页眉或页脚。 Docinfo 文件可用于将辅助metadata, stylesheet, and script注入转换器未添加的输出中。
 
@@ -1130,9 +1125,9 @@ docinfo 功能不适用于所有后端。虽然它在转换为 HTML 和 DocBook 
 
 必须使用 docinfo 属性显式启用 docinfo 功能（请参阅启用 docinfo）。使用哪些 docinfo 文件取决于 docinfo 属性的值以及后端。
 
-IMPORTANT:
-
-=== Head docinfo files
+//IMPORTANT:
+//
+//=== Head docinfo files
 
 
 

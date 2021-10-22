@@ -1,0 +1,57 @@
+[#chart-block-macro-extension]
+= Chart Block Macro Extension
+include::attrabute.adoc[]
+
+
+. chartjs 引擎折线图(失效)
++
+chart::sample-data.csv[line,engine="chartjs"]
+
+. chartist 引擎折线图 ,设置 高宽宏
++
+chart::sample-data.csv[bar,600,300,engine="chartist"]
+
+. 默认c3js 引擎 折线图，设置高宽宏
++
+chart::sample-data.csv[height=200,width=500]
+
+. 默认c3js 引擎 平滑折线图，设置高宽宏
++
+chart::sample-data.csv[spline,500,400]
+
+. 设置 axis labels (c3js 引擎专有, 参阅 https://c3js.org/samples/axes_label.html)
++
+chart::sample-data.csv[step, 500, 400, axis-x-label="X Label", axis-y-label="Y Label"]
+
+. 设置数据名称 (c3js 专有, 参阅 https://c3js.org/samples/data_name.html)
++
+chart::sample-data.csv[line, data-names="{'0':'Name 1', '1':'Name 2'}"]
+
+. 默认c3js 折线图，文本代码块
++
+[chart,line]
+....
+January,February,March,April,May,June,July
+28,48,40,19,86,27,90
+65,59,80,81,56,55,40
+....
+
+. 默认c3js pie 图，文本代码块
++
+[chart,pie]
+....
+保持,21
+待定,9
+更新,25
+删除,16
+....
+
+. engine="chartjs" pie 图，文本代码块
++
+[chart,pie, engine="chartjs"]
+....
+保持,21
+待定,9
+更新,25
+删除,16
+....
