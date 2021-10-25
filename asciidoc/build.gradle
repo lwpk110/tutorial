@@ -2,11 +2,24 @@ plugins {
     id 'org.asciidoctor.jvm.convert' version '3.1.0'
 }
 
+
+
+/**
+ * <p> gem path变量可通过 `gem environment` 命令获取;</p>
+ * <p> 如果出现 源代码 中找不到 include 链接文件时， 参阅 https://github.com/asciidoctor/asciidoctor-gradle-plugin/issues/549
+ * 作者 `pplm` 的 solution2 解决方案：
+ *     1. 使用 baseDirFollowsSourceFile()
+ * </p>
+ */
 asciidoctor {
-    baseDirFollowsSourceDir()  // base dir默认 项目目录， 不设置这个将找不到include的应用目标，只会从项目根目录找起
-    sourceDir  file('./')
-    sources {
-        include '*.adoc', '**/*.adoc'
+    baseDirFollowsSourceFile()
+    asciidoctorj {
+        gemPaths = ['/home/luwei/gems', '/home/luwei/.gem/ruby/2.5.0', '/var/lib/gems/2.5.0', '/usr/lib/x86_64-linux-gnu/rubygems-integration/2.5.0', '/usr/lib/x86_64-linux-gnu/rubygems-integration/2.5.0', '/usr/share/rubygems-integration/all']
+        requires = ['asciidoctor-diagram', 'asciidoctor-kroki', 'asciidoctor-chart']
     }
-    outputDir  file('html')
+    sourceDir file('./')
+    sources {
+        include 'readme.adoc', '**/tutorial.adoc', '**/README.adoc', '**/*-exam.adoc'
+    }
+    outputDir file('build/html')
 }
