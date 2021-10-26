@@ -2,28 +2,40 @@
 = Asciidoc 简易指南
 include::attributes.adoc[]
 
-////
-:source-highlighter: pygments
-:pygments-style: borland
-////
-
-////
-:source-highlighter: highlightjs
-:highlightjs-theme: xcode
-////
-
 [#_段落]
 == 段落
 
+[source,text]
+.源代码
+----
+include::tutorial.adoc[tags=p]
+----
 
+.结果
+[%collapsible]
+====
+// tag::p[]
 Paragraphs don't require special markup in AsciiDoc.
 A paragraph is defined by one or more consecutive lines of text.
 Newlines within a paragraph are not displayed.
 
 Leave at least one blank line to begin a new paragraph.
+// end::p[]
+====
+
 
 === 文字段落
 
+[source,text]
+.源代码
+----
+include::tutorial.adoc[tags=ip]
+----
+
+.结果
+[%collapsible]
+====
+// tag::ip[]
 A normal paragraph.
 
  A literal paragraph.
@@ -35,7 +47,21 @@ A normal paragraph.
  like the ones in this sentence,
  are preserved.
 
+// end::ip[]
+====
+
 === 硬换行
+
+[source,text]
+.源代码
+----
+include::tutorial.adoc[tags=hardbreaks]
+----
+
+.结果
+[%collapsible]
+====
+// tag::hardbreaks[]
 
 Roses are red, +
 violets are blue.
@@ -44,16 +70,44 @@ violets are blue.
 A ruby is red.
 Java is black.
 
+// end::hardbreaks[]
+====
+
 === 引导段落(字体会大一些)
+
+[source,asciidoc]
+.源代码
+----
+include::tutorial.adoc[tags=lead-p]
+----
+
+.结果
+[%collapsible]
+====
+// tag::lead-p[]
 
 [.lead]
 This text will be styled as a lead paragraph (i.e., larger font).
 
 This paragraph will not be.
 
+// end::lead-p[]
+====
+
 == 文本格式
 
 === 粗体、斜体和等宽
+
+[source,asciidoc]
+.源代码
+----
+include::tutorial.adoc[tags=font]
+----
+
+.结果
+[%collapsible]
+====
+// tag::font[]
 
 It has *strong* significance to me.
 *粗体*
@@ -69,69 +123,67 @@ That *_really_* has to go.
 Can't pick one?
 Let's use them `*_all_*`.  `*_斜粗体+突出_*`
 
+// end::font[]
+====
+
 === 局部粗体、斜体和等宽
 
-**C**reate, **R**ead, **U**pdate, and **D**elete (CRUD) *R*ead: 不行
+:content:   **C**reate, **R**ead, **U**pdate, and **D**elete (CRUD) *R*ead: 不行  + \
+            That's fan__freakin__tastic! + \
+            Don't pass generic ``Object``s to methods that accept ``String``s! + \
+            It was Beatle**__mania__**!
 
-That's fan__freakin__tastic!
+include::preview.adoc[]
 
-Don't pass generic ``Object``s to methods that accept ``String``s!
+=== 高亮 下划线、删除线和自定义角色]
 
-It was Beatle**__mania__**!
+:content: Werewolves are allergic to #cinnamon#. #高亮# + \
+refers to text that contains formatting ##mark##s. + \
+##局部##高亮  + \
+Where did all the [.underline]#cores# go?   [.underline]#下划线# + \
+We need [.line-through]#ten# twenty VMs.  [.line-through]#删除线# + \
+A [.myrole]#custom role# must be fulfilled by the theme. + \
 
-=== 高亮 下划线、删除线和自定义角色
-
-Werewolves are allergic to #cinnamon#.
-#高亮#
-
-##Mark##up refers to text that contains formatting ##mark##s.
-##局部##高亮
-
-Where did all the [.underline]#cores# go?   [.underline]#下划线#
-
-We need [.line-through]#ten# twenty VMs.  [.line-through]#删除线#
-
-A [.myrole]#custom role# must be fulfilled by the theme.
+include::preview.adoc[]
 
 === 上标和下标
 
-^super^script phrase | 2^99^ + 1^88^ =?
+:content: ^super^script phrase | 2^99^ + 1^88^ =? + \
+          ~sub~script phrase | S~2~ + S~3~ = S~4~
 
-~sub~script phrase | S~2~ + S~3~ = S~4~
+include::preview.adoc[]
 
 === 智能双引号和单引号
 
-"`double curved quotes`" "`双引号`"
+:content: "`double curved quotes`" "`双引号`"  + \
+          '`single curved quotes`' '`单引号`' \
+          Olaf's desk was a mess. \
+          A ``std::vector```'s size is the number of items it contains.  ``高亮单引号``'s + \
+          All of the werewolves`' desks were a mess. + \
+          Olaf had been with the company since the `'00s.
 
-'`single curved quotes`' '`单引号`'
-
-Olaf's desk was a mess.
-
-A ``std::vector```'s size is the number of items it contains.  ``高亮单引号``'s
-
-All of the werewolves`' desks were a mess.
-
-Olaf had been with the company since the `'00s.
+include::preview.adoc[]
 
 == 链接
 
 === 自动连接，超链接，mail to 宏
 
-https://asciidoctor.org - automatic!
+:content: https://asciidoctor.org - automatic!  + \
+          https://asciidoctor.org[Asciidoctor]  http://baidu.com[超链接] + \
+          devel@discuss.example.org  - automatic mailto + \
+          mailto:devel@discuss.example.org[Discuss]  + \
+          mailto:lwpk110@163.com[邮件联系我] + \
+          mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to join!]
 
-https://asciidoctor.org[Asciidoctor]  http://baidu.com[超链接]
-
-devel@discuss.example.org  - automatic mailto
-
-mailto:devel@discuss.example.org[Discuss]
-mailto:lwpk110@163.com[邮件联系我]
-mailto:join@discuss.example.org[Subscribe,Subscribe me,I want to join!]
+include::preview.adoc[]
 
 === 带参数的超链接宏
 
-https://discuss.asciidoctor.org[Discuss Asciidoctor,role=external,window=_blank]
+:content:   https://discuss.asciidoctor.org[Discuss Asciidoctor]  + \
+            https://discuss.asciidoctor.org[Discuss Asciidoctor,role=external,window=_blank]  + \
+            https://discuss.asciidoctor.org[Discuss Asciidoctor^]
 
-https://discuss.asciidoctor.org[Discuss Asciidoctor^]
+include::preview.adoc[]
 
 === url带特殊符号
 
@@ -144,7 +196,7 @@ https://example.org/?q=%5Ba%20b%5D[URL with special characters]
 
 === 链接相对路径的文件
 
-link:index.html[Docs]
+link:filename.txt[Docs]
 
 ===  链接到 Windows UNC path
 
@@ -783,7 +835,7 @@ Text in your document.
 ****
 This is content in a sidebar block.
 
-image::images/icons/note.png[]
+image::icons/note.png[]
 
 This is more content in the sidebar block.
 ****
@@ -848,8 +900,8 @@ sudo dnf install asciidoc
 * literal
 
 [literal]
-          {
-    "不规则的json格式": "value"
+{
+"不规则的json格式": "value"
 }
 
 * Open
@@ -1117,17 +1169,86 @@ CAUTION: 中文 `斜体` 和 `粗斜体` 未找到。
 
 == docinfo
 
-TODO: ....
-
 您可以使用 docinfo 文件将自定义内容添加到输出文档的页眉、页眉或页脚。 Docinfo 文件可用于将辅助metadata, stylesheet, and script注入转换器未添加的输出中。
 
 docinfo 功能不适用于所有后端。虽然它在转换为 HTML 和 DocBook 等输出格式时有效，但在使用 Asciidoctor PDF 转换为 PDF 时不起作用。
 
 必须使用 docinfo 属性显式启用 docinfo 功能（请参阅启用 docinfo）。使用哪些 docinfo 文件取决于 docinfo 属性的值以及后端。
 
+=== docinfo 实现目录折叠
+
+集成 `tocify.js`
+
+Asciidoctor 的默认模板不包括展开/折叠 目录 的功能。您需要添加自己的 CSS/JavaScript 来实现该目标。
+最简单的方法是使用“docinfo”文件。有关详细信息，请参阅 https://docs.asciidoctor.org/asciidoctor/latest/docinfo/。
+
+. 在 `attributes.adoc` 中 启用 docinfo 功能。
++
+[source,asciidoc]
+----
+:docinfo: shared
+:docinfodir: assets/meta
+----
+. 在 目录 `assets/meta` 新建文件 `docinfo.html`，内容参考 link:../resources/util/docinfo.html[]
+. 包含有 `attributes.adoc` 的所有 adoc 文档中都将拥有目录折叠的功能。
+
+== 转 html
+
+=== asciidoctor cli
+
+[source,bash]
+----
+$  asciidoctor *.adoc -r asciidoctor-diagram -D html
+----
+* `-r` - `requirements` 指依赖的库
+* `-D` - `destination-dir` 输出目录
+
 //IMPORTANT:
 //
 //=== Head docinfo files
+
+== tab 切换
+
+原生 asciidoctor 标记语法并不支持 tab 切换，可以使用 https://github.com/spring-io/spring-asciidoctor-extensions[spring-asciidoctor-extensions] 来扩展。
+
+.源代码
+    [source,xml,indent=0,role="primary"]
+    .Maven
+    ----
+    <dependency>
+        <groupId>com.example</groupId>
+        <artifactId>some-library</artifactId>
+        <version>1.2.3</version>
+    </dependency>
+    ----
+
+    [source,indent=0,role="secondary"]
+    .Gradle
+    ----
+    compile 'com.example:some-library:1.2.3'
+    ----
+
+.结果
+====
+[source,xml,indent=0,role="primary"]
+.Maven
+----
+<dependency>
+    <groupId>com.example</groupId>
+    <artifactId>some-library</artifactId>
+    <version>1.2.3</version>
+</dependency>
+----
+
+[source,indent=0,role="secondary"]
+.Gradle
+----
+compile 'com.example:some-library:1.2.3'
+----
+====
+
+CAUTION: 'org.asciidoctor.jvm.convert' gradle plugin 必须为 version '3.3.2'， 以下版本处理多个 会出现问题。
+
 
 
 

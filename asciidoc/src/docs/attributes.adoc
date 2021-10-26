@@ -1,4 +1,5 @@
 :!version-label:
+:icons: font
 :doctype: book
 :idprefix:
 :idseparator: -
@@ -9,9 +10,12 @@
 :sectanchors:
 :sectnums:
 :hide-uri-scheme:
-:docinfo: shared,private
 :attribute-missing: warn
 :chomp: default headers packages
 :spring-boot-artifactory-repo: snapshot
 :github-tag: main
-
+:imagesdir: ../resources/images
+:docinfo: shared
+:docinfodir: ../resources/util
+:description: This document catalogs a set of recommended practices \
+              for composing documents in AsciiDoc.

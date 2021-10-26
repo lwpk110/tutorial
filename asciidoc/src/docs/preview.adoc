@@ -1,0 +1,21 @@
+:content: {content}
+
+[source,asciidoc,subs="attributes, +post_replacements"]
+.源代码
+----
+{content}
+----
+
+.结果
+====
+[source,asciidoc,subs="attributes+,normal,+quotes"]
+----
+{content}
+----
+====
+
+
+
+
+
+
