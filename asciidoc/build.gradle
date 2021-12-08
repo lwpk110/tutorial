@@ -40,7 +40,7 @@ asciidoctor {
     }
     sourceDir file('./')
     sources {
-        include 'readme.adoc', '**/tutorial.adoc', '**/README.adoc', '**/*-exam.adoc'
+        include '**/readme.adoc', '**/tutorial.adoc', '**/README.adoc', '**/*-exam.adoc'
     }
     outputDir file('build/html')
     configurations 'asciidoctorExt'

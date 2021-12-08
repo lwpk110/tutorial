@@ -16,6 +16,20 @@
 :github-tag: main
 :icons: font
 
+== 关于本文档
+
+本教程文档建议使用 https://github.com/asciidoctor/asciidoctor-gradle-plugin[asciidoctor-gradle-plugin]来编译构建。具体构建过程脚本参见 link:build.gradle[]
+
+    ../gradlew asciidoctor
+
+本地环境构建需要安装 ruby2.5+， 使用 gem 管理模块包。
+
+其它依赖：
+
+. 本教程目前使用了 “asciidoctor-diagram”， "asciidoctor-kroki"， "asciidoctor-chart" 三个图表模块;
+. https://github.com/spring-io/spring-asciidoctor-extensions[spring-asciidoctor-extensions扩展插件]来支持 tab切换，
+. tocify.js 来支持目录收缩。
+
 == 语法简易指南
 
 AsciiDoc 是一种文本文档格式，用于编写笔记、文档、文章、书籍、电子书、幻灯片、网页、手册页和博客。AsciiDoc 文件可以翻译成多种格式，包括 HTML、PDF、EPUB、手册页。

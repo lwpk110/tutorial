@@ -2,4 +2,7 @@ rootProject.name = 'tutorial'
 include 'asciidoc'
 include 'testing'
 include 'ddd'
+include 'osgi'
+include 'bundle'
+include 'bundle'
 

@@ -360,7 +360,8 @@ image::fav.png[cnm]
 
 添加宏指令：
 
-image::fav.png[cnm, width=5%] to show inline images.
+image::fav.png[cnm, width=5%]
+to show inline images.
 
 === 按照条件包含
 可以基于文档属性或基于文档属性的值包含或排除文本。可以使用属性 ifdef、ifndef 和 ifeval 来实现这一点。
@@ -412,13 +413,15 @@ endif::exercise_solution+test-condition1[]
 
 e.g.:
 
-//ifeval::[{test-condition2} >= 1]
-//test-condition2 == 1 所以显示这段文字
-//endif::[]
-//
-//ifeval::[{test-condition2} < 1]
-//test-condition2 == 1 所以不显示这段文字
-//endif::[]
+:test-condition2: 0
+
+ifeval::[{test-condition2} >= 1]
+test-condition2 == 1 所以显示这段文字
+endif::[]
+
+ifeval::[{test-condition2} < 1]
+test-condition2 < 1 所以不显示这段文字
+endif::[]
 
 == list列表
 === 无序列表

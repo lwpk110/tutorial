@@ -75,6 +75,24 @@ DiagramBlock <|-- DitaaBlock
 DiagramBlock <|-- PlantUmlBlock
 ....
 
+
+.plantuml - 思维导图
+[plantuml,target=diagram-plantuml1,format=png]
+....
+include::vim-cmd.puml[]
+....
+
+.plantuml - 思维导图
+[plantuml,target=diagram-plantuml1,format=png]
+....
+@startmindmap
+*[#Orange] Colors
+**[#lightgreen] Green
+**[#FFBBCC] Rose
+**[#lightblue] Blue
+@endmindmap
+....
+
 == vega
 
 include::vega.adoc[]

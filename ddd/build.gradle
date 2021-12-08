@@ -1,7 +1,15 @@
+plugins {
+    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+}
+
+configurations {
+    asciidoctorExt
+}
+
 ext['joda-money.version'] = '1.0.1'
 
-
 dependencies {
+    asciidoctorExt 'io.spring.asciidoctor:spring-asciidoctor-extensions-block-switch:0.6.0'
 
     implementation "org.springframework.boot:spring-boot-starter-data-mongodb"
     implementation 'org.springframework.data:spring-data-cassandra'
@@ -19,6 +27,19 @@ dependencies {
     testImplementation "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+asciidoctor {
+    baseDirFollowsSourceDir()
+    baseDirFollowsSourceFile()
+    copyAllResources()
+
+    sourceDir file('./')
+    sources {
+        include '**/readme.adoc', '**/tutorial.adoc', '**/README.adoc', '**/*-exam.adoc'
+    }
+    outputDir file('build/html')
+    configurations 'asciidoctorExt'
 }
 
 
