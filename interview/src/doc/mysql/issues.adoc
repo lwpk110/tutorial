@@ -1,0 +1,8 @@
+= issues
+
+== left join on and 和 left join where 的区别
+. left join 就是返回 左边表的全部；
+. on 只关注两个表的联合字段。当在 on 中通过列匹配表达式连接时，join 将匹配所有字段相同的行， on and 也是一样的道理，
+坐标返回全部，右表再做过滤。
+. where 是指 join 后再过滤。
+

@@ -1,0 +1,66 @@
+[[EXPLAIN]]
+= EXPLAIN
+
+当您在 SELECT 语句之前加上关键字 EXPLAIN 时，MySQL 解释了它将如何处理 SELECT，并提供了关于表如何联接以及以何种顺序联接的信息。
+
+在 EXPLAIN 的帮助下，您可以看到何时必须向表添加索引，以获得使用索引查找记录的更快的 SELECT。
+您还可以看到优化器是否以最佳顺序连接表。若要强制优化程序对 SELECT 语句使用特定的连接顺序，请添加 STRAIGHT_join 子句
+
+对于非简单联接，EXPLAIN 为 SELECT 语句中使用的每个表返回一行信息。这些表是按照它们将被读取的顺序列出的。
+MySQL 使用单扫描多连接方法解析所有连接。这意味着 MySQL 从第一个表中读取一行，然后在第二个表中找到匹配的行，
+然后在第三个表中找到匹配的行，依此类推。处理所有表时，它输出选定的列，并通过表列表回溯，直到找到有更多匹配行的表。
+从这个表中读取下一行，然后继续读取下一个表。
+
+== EXPLAIN 列解释
+
+* table
++
+输出行所引用的表。
+* type
++
+join类型
+* possible_keys
++
+Possible_keys 列表明 MySQL 可以使用哪些索引来查找该表中的行。
++
+NOTE: 此列完全独立于表的顺序。这意味着可能 Possible_keys中的一些键在实践中可能无法使用生成的表顺序。
++
+TIP: 如果此列为空，则没有相关的索引。在这种情况下，您可以通过检查 WHERE 子句来改进查询的性能，
+以查看它是否引用了适合于索引的某些列。如果是这样，创建一个适当的索引并使用 EXPLAIN 再次检查查询
++
+要查看一个表有哪些索引，使用 `SHOW INDEX FROM tbl_name`。
+* key
++
+key 列表示 MySQL **实际** 决定使用的键(索引)。如果没有选择索引，则键为 NULL。如果 MySQL 选择了错误的索引，
+您可以通过使用 myisamchk-analyze 强制 MySQL 使用另一个索引。
+* ken_len
+`Key_len` 列表示 MySQL 使用的键的长度。如果key为 NULL，则长度为 NULL。请注意，这告诉我们 在一个组合索引中，这个索引列
+MySQL 实际上使用多少。参考 https://www.cnblogs.com/gomysql/p/4004244.html[explain之key_len计算],
+** 单列索引 - 计算公式：字段长度 * 字符集单字符长度（utf8 字符长度为3）。例如 `name char（20）` 字段使用 utf8存储
+ `key_len = 20*3=60`;
+** 组合索引
++
+key_len的长度计算公式::
+*** varchar(10)变长字段且允许NULL    -  `10 * ( character set：utf8=3,gbk=2,latin1=1)+1(NULL)+2(变长字段)`
+*** varchar(10)变长字段且不允许NULL  - 10 *( character set：utf8=3,gbk=2,latin1=1)+2(变长字段)
+*** char(10)固定字段且允许NULL       -  10 * ( character set：utf8=3,gbk=2,latin1=1)+1(NULL)
+*** char(10)固定字段且不允许NULL     -  10 * ( character set：utf8=3,gbk=2,latin1=1)
++
+TIP: key_len 越小，索引效果越好。
+
+* ref
++
+ref 表示索引key使用哪些列或者常量去表中搜索行
+* rows
++
+行列表示 MySQL 认为执行查询必须检查的行数。不使用索引将全表扫描，然后执行非索引筛选。
+* filtered
+
+
+* Extra
++
+此列包含关于 MySQL 将如何解析查询的其他信息。以下是在本栏中可以找到的不同文本字符串的说明:
+参阅 xref:EXPLAIN-extra.adoc[extra 类型]
+
+
+
