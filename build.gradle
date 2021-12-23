@@ -1,20 +1,19 @@
 plugins {
     id 'org.springframework.boot' version '2.5.4'
 //    id 'org.asciidoctor.jvm.convert' version '3.3.2'
+    id 'org.unbroken-dome.test-sets' version '4.0.0' apply false
 }
 
 allprojects {
     apply plugin: 'idea'
     apply plugin: 'eclipse'
-    apply plugin: 'io.spring.dependency-management'
 }
 
 subprojects {
     apply plugin: 'java'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.unbroken-dome.test-sets'
 
-    sourceCompatibility = 11
-    targetCompatibility = 11
 
     dependencyManagement {
         imports {
@@ -23,12 +22,28 @@ subprojects {
     }
 
     tasks.withType(JavaCompile) { options.encoding = "UTF-8" }
+    test {
+        useJUnitPlatform()
+    }
+
+    testSets {
+        integrationTest { dirName = 'integration-test' }
+    }
+
+    project.integrationTest {
+        outputs.upToDateWhen { false }
+    }
 
     repositories {
         mavenLocal()
         maven { url 'https://maven.aliyun.com/repository/public/' }
         maven { url 'https://repo.spring.io/release' }
         mavenCentral()
+    }
+
+    dependencies {
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'org.mockito:mockito-junit-jupiter'
     }
 }
 
