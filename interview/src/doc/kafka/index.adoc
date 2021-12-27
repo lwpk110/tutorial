@@ -1,0 +1,6 @@
+
+= kafka
+
+== 高吞吐+低延迟原理
+
+xref:common/高吞吐低延迟原理.adoc[]

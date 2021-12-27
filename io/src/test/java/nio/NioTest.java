@@ -12,7 +12,9 @@ import java.net.URL;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.Selector;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -123,8 +125,8 @@ class NioTest {
     @Test
     public void whenWriteWithFileChannelUsingRandomAccessFile_thenCorrect()
             throws IOException {
-        String file = "src/test/resources/data/out/test_write_using_filechannel.txt";
-        try (RandomAccessFile writer = new RandomAccessFile(file, "rw");
+        String file = "src/test/resources/data/output/test_write_using_filechannel.txt";
+        try (RandomAccessFile writer = new RandomAccessFile(new File(file), "rw");
                 FileChannel channel = writer.getChannel()){
             ByteBuffer buff = ByteBuffer.wrap("Hello world".getBytes(StandardCharsets.UTF_8));
 
@@ -140,19 +142,24 @@ class NioTest {
     @Test
     void scatterGather() throws IOException {
         File file = new File("src/test/resources/data/nio-data.txt"); // 40个字节
-        RandomAccessFile givenFile = new RandomAccessFile(file, "rw");
+        RandomAccessFile givenFile = new RandomAccessFile(file, "r");
         Assertions.assertNotNull(givenFile);
 
         FileChannel channel = givenFile.getChannel();
         ByteBuffer header = ByteBuffer.allocate(10);
         ByteBuffer body = ByteBuffer.allocate(40);
         ByteBuffer[] bufferArray = {header, body};
-        channel.read(bufferArray);
+        long read = channel.read(bufferArray);
+        System.out.println("read:" + read);
 
         File gatherFile = new File("src/test/resources/data/output/gather-res.txt");
         RandomAccessFile gatherRandomAccessFile = new RandomAccessFile(gatherFile, "rw");
         FileChannel gatherFileChannel = gatherRandomAccessFile.getChannel();
+        Arrays.stream(bufferArray).forEach(Buffer::flip); //  必须把指针拨回0
         gatherFileChannel.write(bufferArray);
+//        ByteBuffer byteBuffer1 = ByteBuffer.wrap(new String("111111").getBytes());
+//        ByteBuffer byteBuffer2 = ByteBuffer.wrap(new String("2222").getBytes());
+//        gatherFileChannel.write(new ByteBuffer[]{byteBuffer1, byteBuffer2});
     }
 
     @Test
@@ -168,8 +175,17 @@ class NioTest {
         ByteBuffer byteBuffer = ByteBuffer.allocate(1000);
         byteBuffer.put(new String("hello, byteButter").getBytes(StandardCharsets.UTF_8));
         gatherFileChannel.write(byteBuffer);
+    }
 
+    @Test
+    void transform(){}
 
+    @Test
+    void selector() throws IOException {
+        Selector selector = Selector.open();
+        RandomAccessFile raf = new RandomAccessFile("src/test/resources/data/nio-data.txt","rw");
+        FileChannel channel = raf.getChannel();
+        channel.reg
     }
 
 }
