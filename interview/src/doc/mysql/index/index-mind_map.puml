@@ -1,0 +1,17 @@
+@startmindmap
+*[#orange] 索引
+**[#lightgreen] 基础分类
+***_ 主键索引
+***_ 唯一索引
+***_ 普通索引
+***_ 全文索引
+***_ 组合索引
+**[#lightblue] 数据结构
+***_ 哈希表
+***_ 有序数组
+***_ B- tree
+***_ B+ tree
+**[#lightyellow] 物理存储
+***_ 聚簇索引
+***_ 非聚簇索引
+@endmindmap
