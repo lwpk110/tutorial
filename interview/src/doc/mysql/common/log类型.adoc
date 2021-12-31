@@ -1,0 +1,13 @@
+
+== undo log
+
+== redo log
+https://www.cnblogs.com/wyy123/p/7880077.html
+== binlog
+https://www.cnblogs.com/Presley-lpc/p/9619571.html
+
+https://blog.csdn.net/wwwdc1012/article/details/88373440
+服务器使用多种日志格式在二进制日志中记录信息。采用的确切格式取决于所使用的 MySQL 版本。
+共有三种日志格式::
+.
+

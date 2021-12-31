@@ -1,0 +1,332 @@
+:origin-page: https://www.cnblogs.com/fanBlog/p/13666991.html
+
+Spring Cloud是一个全家桶式的技术栈，包含了很多组件。本文先从其最核心的几个组件入手，来剖析一下其底层的工作原理。也就是Eureka、Ribbon、Feign、Hystrix、Zuul这几个组件。
+
+1.Spring Cloud Netflix Eureka 服务治理
+
+Eureka，服务注册和发现，它提供了一个服务注册中心、服务发现的客户端，还有一个方便的查看所有注册的服务的界面。 所有的服务使用Eureka的服务发现客户端来将自己注册到Eureka的服务器上。
+
+2.Spring Cloud Ribbon 负载均衡
+
+即负载均衡，Zuul网关将一个请求发送给某一个服务的应用的时候，如果一个服务启动了多个实例，就会通过Ribbon来通过一定的负载均衡策略来发送给某一个服务实例
+
+3.Spring Cloud Hystrix 服务容错保护 ,监控和熔断器。我们只需要在服务接口上添加Hystrix标签，就可以实现对这个接口的监控和断路器功能。
+
+Hystrix Dashboard，监控面板，他提供了一个界面，可以监控各个服务上的服务调用所消耗的时间等。发起请求是通过Hystrix的线程池来走的，不同的服务走不同的线程池，实现了不同服务调用的隔离，避免了服务雪崩的问题
+
+Turbine，监控聚合，使用Hystrix监控，我们需要打开每一个服务实例的监控信息来查看。而Turbine可以帮助我们把所有的服务实例的监控信息聚合到一个地方统一查看。这样就不需要挨个打开一个个的页面一个个查看。
+
+4.Spring Cloud Feign 声明式服务调用
+
+服务客户端，服务之间如果需要相互访问，可以使用RestTemplate，也可以使用Feign客户端访问。它默认会使用Ribbon来实现负载均衡。基于Feign的动态代理机制，根据注解和选择的机器，拼接请求URL地址，发起请求
+
+5.Spring Cloud Zuul API网关服务
+
+网关，所有的客户端请求通过这个网关访问后台的服务。他可以使用一定的路由配置来判断某一个URL由哪个服务来处理。并从Eureka获取注册的服务来转发请求。
+
+6.Spring Cloud Config 分布式配置中心类似于Apollo
+7.Spring Cloud Bus 消息总线：是一种消息代理，消息验证，传输，路由的架构模式，用来接收和分发消息。支持RabbitMQ和Kafka（实现原理就是AMQP面向
+消息中间件的开发室标准应用成协议）可以实现消息方向，消息队列效率路由，可靠性，安全性
+Spring Cloud Sleuth分布式服务跟踪 如SkyWalking
+
+
+
+回到顶部
+一、业务场景介绍
+先来给大家说一个业务场景，假设咱们现在开发一个电商网站，要实现支付订单的功能，流程如下：
+
+创建一个订单之后，如果用户立刻支付了这个订单，我们需要将订单状态更新为“已支付”
+
+扣减相应的商品库存
+
+通知仓储中心，进行发货
+
+给用户的这次购物增加相应的积分
+
+
+
+针对上述流程，我们需要有订单服务、库存服务、仓储服务、积分服务。整个流程的大体思路如下：
+
+用户针对一个订单完成支付之后，就会去找订单服务，更新订单状态
+
+订单服务调用库存服务，完成相应功能
+
+订单服务调用仓储服务，完成相应功能
+
+订单服务调用积分服务，完成相应功能
+
+至此，整个支付订单的业务流程结束
+
+
+
+下图这张图，清晰表明了各服务间的调用过程：
+
+
+
+ 好！有了业务场景之后，咱们就一起来看看Spring Cloud微服务架构中，这几个组件如何相互协作，各自发挥的作用以及其背后的原理。
+
+
+
+回到顶部
+二、Spring Cloud核心组件：Eureka
+咱们来考虑第一个问题：订单服务想要调用库存服务、仓储服务，或者是积分服务，怎么调用？
+
+订单服务压根儿就不知道人家库存服务在哪台机器上啊！他就算想要发起一个请求，都不知道发送给谁，有心无力！
+
+这时候，就轮到Spring Cloud Eureka出场了。Eureka是微服务架构中的注册中心，专门负责服务的注册与发现。
+
+ 咱们来看看下面的这张图，结合图来仔细剖析一下整个流程：
+
+
+
+如上图所示，库存服务、仓储服务、积分服务中都有一个Eureka Client组件，这个组件专门负责将这个服务的信息注册到Eureka Server中。说白了，就是告诉Eureka Server，自己在哪台机器上，监听着哪个端口。而Eureka Server是一个注册中心，里面有一个注册表，保存了各服务所在的机器和端口号
+
+
+
+订单服务里也有一个Eureka Client组件，这个Eureka Client组件会找Eureka Server问一下：库存服务在哪台机器啊？监听着哪个端口啊？仓储服务呢？积分服务呢？然后就可以把这些相关信息从Eureka Server的注册表中拉取到自己本地缓存起来。
+
+
+
+这时如果订单服务想要调用库存服务，不就可以找自己本地的Eureka Client问一下库存服务在哪台机器？监听哪个端口吗？收到响应后，紧接着就可以发送一个请求过去，调用库存服务扣减库存的那个接口！同理，如果订单服务要调用仓储服务、积分服务，也是如法炮制。
+
+
+
+总结一下：
+
+Eureka Client：负责将这个服务的信息注册到Eureka Server中 ，既可以是服务提供者也可以是服务消费者
+
+Eureka Server：注册中心，里面有一个注册表，保存了各个服务所在的机器和端口号
+
+
+
+Eureka基础架构
+服务注册中心：Eureka提供的服务端，提供服务注册与服务发现功能
+
+服务提供者：将自身的服务注册到注册中心，以供其他应用发现
+
+服务消费者：从注册中心获取服务列表，然后根据服务列表调用具体的服务提供者
+
+高可用eureka注册中心：（所有的节点即使是服务提供方，也是服务消费方，服务注册中心也如此） ，将自己作为服务向其他注册中心注册自己，形成一组互相注册的服务注册中心，实现服务清单的互相同步，达到高可用
+
+
+
+
+
+服务提供者
+
+服务注册：服务启动时发送REST请求将自己注册到Eureka Server上，同时带自身的元数据信息，Eureka Server接收之后，
+维护一个AbstractInstanceRegistry.ConcurrentHashMap<String, Map<String, Lease<InstanceInfo>>> registry 存储（可以实现保存微服务集群的信息），key=服务名 ，（Server1，实例信息，service2，实例信息），维护注册表、拉取注册表、更新心跳时间，全部发生在内存里！这是Eureka Server非常核心的一个点。实例信息包括：这个InstanceInfo就代表了服务实例的具体信息，比如机器的ip地址、hostname以及端口号，状态（up，down），Lease，里面则会维护每个服务最近一次发送心跳的时间
+
+服务续约：服务提供者维护一个心跳来持续告诉Eureka Server“我还活着”，防止Eureka Server的“剔除任务”，配置： lease-renewal-interval-in-seconds: 30 #服务续约任务的调用间隔时间 默认为30秒
+服务下线：服务实例正常关闭操作，触发服务下线的Rest请求给Eureka Server，告诉服务注册中心“我要下线了”，服务端接收到请求后，将服务状态置为down，并把下线事件传播出去。
+服务注册中心
+
+失效剔除：非正常下线，没有续约的服务进行剔除，当服务实例非正常下线如内存溢出，网络故障灯，服务注册中心未收到“服务下线”请求，Eureka Server在启动时候会创建一个定时任务，默认每隔60秒，将当前清单中超时（默认90秒没有需续约的服务）剔除出去 配置：lease-expiration-duration-in-seconds: 90
+服务同步：注册中心互相注册为服务，当服务提供者发送注册请求到一个服务注册中心时，他会将改请求转发给集群中相连的其他注册中心，实现服务同步，实现高可用
+自我保护：服务注册到Eureka Server之后，维护一个心跳连接，告诉Eureka Server 自己还活着，Eureka Server 在运行期间，统计心跳失败的比例在15分钟低于85%（实际生产环境是由于网络不稳定），Eureka Server会将当前的实例注册信息保护起来，让这些实例不会过期，尽可能保护实例信息，（可能会出现客户端会获取到实际已经不存在的服务实例，出现服务调用失败的情况，需要客户端实现容错机制，请求重试，断路器等机制）
+服务消费者
+
+获取服务：启动服务消费者时候，发送一个rest请求给服务注册中心，获取服务清单（服务注册中心会缓存一份服务列表（性能考虑），每30秒更新一次）Eureka Client会每隔30秒去找Eureka Server拉取最近注册表的变化，看看其他服务的地址有没有变化。
+服务调用：根据服务名获取具体的服务实例名和实例的元数据，客户端根据需要调用具体的实例，（ribbon通过轮询方式实现客户端负载均衡）注册中心Eureka Server会缓存一份（性能考虑）只读的服务清单给客户端，每30秒更新一次服务清单
+负载均衡：Ribbon，Ribbon（对服务实例的选择策略） :是一个与Http和TCP的客户端负载均衡器，通过客户端配置的ribbonServerList服务端列表去轮询访问已达到负载均衡的作用，DiscoveryEnabledNIWSServerList重写ribbonServerList
+Eureka提供了region和zone两个概念来进行分区
+这两个概念均来自于亚马逊的AWS,region一个服务只能设置一个，可用设置多个zone，他们是一对多的关系。
+
+region：可以简单理解为地理上的分区，比如亚洲地区，或者华北地区，再或者北京等等，没有具体大小的限制。根据项目具体的情况，可以自行合理划分region。
+zone：可以简单理解为region内的具体机房，比如说region划分为北京，然后北京有两个机房，就可以在此region之下划分出zone1,zone2两个zone
+服务地址：getServiceUrlsMapFromConfig 1先获取region 在获取zone，在获取注册中心的地址 key:defaultZone,value:urlribbon：默认策略会优先访问同一个Zone中的
+
+
+
+回到顶部
+三、相关面试题
+Jersey框架：是一个类似于Spring MVC的框架，是通过Filter实现过滤请求转发的 ，在Eureka中可以看到Jerseyt添加过滤器的Bean
+
+ FilterRegistrationBean
+FilterRegistrationBean
+
+如：Resource（类似于Controller）如：ApplicationResource，InstanceResource，PeerReplicationResource
+
+1.客户端启动时如何注册到服务端？
+Eureka客户端在启动时，首先会创建一个心跳的定时任务，定时向服务端发送心跳信息，服务端会对客户端心跳做出响应，如果响应状态码为404时，表示服务端没有该客户端的服务信息，那么客户端则会向服务端发送注册请求，注册信息包括服务名、ip、端口、唯一实例ID等信息。
+
+ 在register方法中，向服务端的注册信息instanceInfo，它是com.netflix.appinfo.InstanceInfo，包括服务名、ip、端口、唯一实例ID等信息
+
+com.netflix.discovery.DiscoveryClient(){
+initScheduledTasks()
+}
+
+
+ 服务注册&服务续约代码实现
+
+
+服务获取& 服务续约具体实现
+
+ 服务续约具体实现
+
+
+注册中心相关源码
+服务注册
+客户端通过Jersey框架（亚马逊的一个http框架）将服务实例信息发送到服务端，服务端将客户端信息放在一个ConcurrentHashMap对象中。
+
+服务端保存客户端实例信息：
+
+复制代码
+//注册中心保存的服务注册信息
+    //内层map
+    //service1:192.168.0.1
+    //service2:193.168.0.2
+    //外层map
+    //service，内层map
+    private final ConcurrentHashMap<String, Map<String, Lease<InstanceInfo>>> registry
+            = new ConcurrentHashMap<String, Map<String, Lease<InstanceInfo>>>();
+复制代码
+
+
+ Lease.包含心跳信息
+
+
+ 注册中心接收到服务注册请求处理源码
+
+
+服务续约
+注册中心接受到客户端的服务续约请求处理源码：
+
+ View Code
+
+
+服务剔除：
+服务启动的时候，在初始化上下文类里面，启动了一个定时EurekaServerAutoConfiguration->EurekaServerInitializerConfiguration：start()
+
+ 服务剔除机制源码
+ 自我保护机制判断源码：
+1分钟心跳数达到多少个服务才不会被剔除？计算公式是什么？
+
+客户端数据量*(60/30*0.85)=客户端数据量*1.7
+
+假如有总共有10个客户端，那么表示一分钟至少需要收到17次心跳。
+
+服务同步源码：
+replicateToPeers服务同步
+
+
+服务拉取
+ApplicationsResource
+private final ConcurrentMap<Key, ResponseCacheImpl.Value> readOnlyCacheMap = new ConcurrentHashMap();
+private final LoadingCache<Key, ResponseCacheImpl.Value> readWriteCacheMap;
+先从自读服务获取，获取不到从读写缓存里面获取
+差异化获取服务
+
+
+
+
+2.如何搭建高可用Eureka集群？
+1.设置eureka.client.registerWithEureka: true 设置互相注册
+
+2.设置eureka.clientservice-url.defaultZone
+
+eureka的高可用状态下，这些注册中心是对等的，他们会互相将注册在自己的实例同步给其他的注册中心，同样是通过问题1的方式将注册在自己上的实例注册到其他注册中心去。
+
+ //同步实例信息给其他的注册中心
+this.replicateToPeers(PeerAwareInstanceRegistryImpl.Action.Register, info.getAppName(), info.getId(), info, (InstanceStatus)null, isReplication);
+ 同步注册信息
+那么问题来了，一旦 其中一个eureka收到一个客户端注册实例时，既然eureka注册中心将注册在自己的实例同步到其他注册中心中的方式和客户端注册的方式相同，那么在接收的eureka注册中心一端，会不会再同步回给注册中心（或者其他注册中心），从而导致死循环。
+
+注册中心收到注册信息后会判断是否是其他注册中心同步的信息还是客户端注册的信息，如果是客户端注册的信息，那么他将会将该客户端信息同步到其他注册中心去；否则收到信息后不作任何操作。通过此机制避免集群中信息同步的死循环。？
+replicateToPeers方法字面意思是同步或者复制到同事（即其他对等的注册中心），最后一个参数为isReplication，是一个boolean值，表示是否同步（复制），如果是客户端注册的，那么为false,如果是其他注册中心同步的则为true，replicateToPeers方法中，如果isReplication=false时，将会发起同步
+
+注册中心收到注册信息后会判断是否是其他注册中心同步的信息还是客户端注册的信息，如果是客户端注册的信息，那么他将会将该客户端信息同步到其他注册中心去；否则收到信息后不作任何操作。通过此机制避免集群中信息同步的死循环。
+3.客户端是如何拉取服务端信息？是需要时才去服务端拉取，还是先拉取到本地，需要用的时候直接从本地获取？
+客户端拉取服务端服务信息是通过一个定时任务定时拉取的，每次拉取后刷新本地已保存的信息，需要使用时直接从本地直接获取。
+
+ 客户端是如何拉取服务的信息的
+ 刷新本地缓存任务
+4.心跳和服务剔除机制是什么？
+ 心跳机制：
+
+客户端启动后，就会启动一个定时任务，定时向服务端发送心跳数据，告知服务端自己还活着，默认的心跳时间间隔是30秒。
+服务剔除机制：
+
+如果开启了自我保护机制，那么所有的服务，包括长时间没有收到心跳的服务（即已过期的服务）都不会被剔除；
+如果未开启自我保护机制，那么将判断最后一分钟收到的心跳数与一分钟收到心跳数临界值比较，如果失败率大于85%，则启用服务剔除机制；一旦服务剔除机制开启，则Eureka服务端并不会直接剔除所有已过期的服务，而是通过随机数的方式进行剔除，避免自我保护开启之前将所有的服务（包括正常的服务）给剔除。
+服务剔除
+
+5.Eureka自我保护机制是什么？
+在分布式系统的CAP理论中，Eureka采用的AP，也就是Eureak保证了服务的可用性（A），而舍弃了数据的一致性（C）。当网络发生分区时，客户端和服务端的通讯将会终止，那么服务端在一定的时间内将收不到大部分的客户端的一个心跳，如果这个时候将这些收不到心跳的服务剔除，那可能会将可用的客户端剔除了，这就不符合AP理论。
+
+为什么是AP理论？
+
+因为自我保护是检测到心跳失败到一定的百分比，就保护注册实例信息，防止注册实例失效，保证了A，舍弃了C，所以是AP 理论。
+
+ 6.Eureka Server从技术层面是如何抗住日千万级访问量的？
+现在咱们假设手头有一套大型的分布式系统，一共100个服务，每个服务部署在20台机器上，机器是4核8G的标准配置。
+
+也就是说，相当于你一共部署了100 * 20 = 2000个服务实例，有2000台机器。
+
+每台机器上的服务实例内部都有一个Eureka Client组件，它会每隔30秒请求一次Eureka Server，拉取变化的注册表。
+
+此外，每个服务实例上的Eureka Client都会每隔30秒发送一次心跳请求给Eureka Server。
+
+那么大家算算，Eureka Server作为一个微服务注册中心，每秒钟要被请求多少次？一天要被请求多少次？
+
+按标准的算法，每个服务实例每分钟请求2次拉取注册表，每分钟请求2次发送心跳
+
+这样一个服务实例每分钟会请求4次，2000个服务实例每分钟请求8000次
+
+换算到每秒，则是8000 / 60 = 133次左右，我们就大概估算为Eureka Server每秒会被请求150次
+
+那一天的话，就是8000 * 60 * 24 = 1152万，也就是每天千万级访问量
+
+
+
+按照我们的测算，一个上百个服务，几千台机器的系统，按照这样的频率请求Eureka Server，日请求量在千万级，每秒的访问量在150次左右。
+
+即使算上其他一些额外操作，我们姑且就算每秒钟请求Eureka Server在200次~300次吧。
+
+所以通过设置一个适当的拉取注册表以及发送心跳的频率，可以保证大规模系统里对Eureka Server的请求压力不会太大。
+
+1.维护注册表、拉取注册表、更新心跳时间，全部发生在内存里，通过双层map。
+
+2.多级缓存机制
+
+Eureka Server为了避免同时读写内存数据结构造成的并发冲突问题，还采用了多级缓存机制来进一步提升服务请求的响应速度。
+
+在拉取注册表的时候：
+
+首先从ReadOnlyCacheMap里查缓存的注册表。 有个定时每30秒从ReadWriteCacheMap里面获取更新到自己（提升读，避免并发读不存在，然后再从读写缓存获取，相当于自己有个失效机制，每30s更新一次）
+
+ readOnlyCacheMap更新
+
+
+若没有，就找ReadWriteCacheMap里缓存的注册表。 默认180s之后过期
+
+ readWriteCacheMap
+
+
+如果还没有，就从内存中获取实际的注册表数据。
+
+在注册表发生变更的时候：
+
+会在内存中更新变更的注册表数据，同时过期掉ReadWriteCacheMap。
+
+此过程不会影响ReadOnlyCacheMap提供人家查询注册表。
+
+一段时间内（默认30秒），各服务拉取注册表会直接读ReadOnlyCacheMap
+
+30秒过后，Eureka Server的后台线程发现ReadWriteCacheMap已经清空了，也会清空ReadOnlyCacheMap中的缓存
+
+下次有服务拉取注册表，又会从内存中获取最新的数据了，同时填充各个缓存。
+
+7.多级缓存机制的优点是什么？
+ResponseCacheImpl
+1
+2
+private final ConcurrentMap<Key, ResponseCacheImpl.Value> readOnlyCacheMap = new ConcurrentHashMap();
+private final LoadingCache<Key, ResponseCacheImpl.Value> readWriteCacheMap;
+　　
+
+
+尽可能保证了内存注册表数据不会出现频繁的读写冲突问题。
+
+并且进一步保证对Eureka Server的大量请求，都是快速从纯内存走，性能极高。
+
