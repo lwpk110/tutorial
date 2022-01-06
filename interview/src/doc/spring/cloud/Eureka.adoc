@@ -1,5 +1,7 @@
 :origin-page: https://www.cnblogs.com/fanBlog/p/13666991.html
 
+:blog1: https://www.cnblogs.com/fanBlog/p/13666991.html
+
 Spring Cloud是一个全家桶式的技术栈，包含了很多组件。本文先从其最核心的几个组件入手，来剖析一下其底层的工作原理。也就是Eureka、Ribbon、Feign、Hystrix、Zuul这几个组件。
 
 1.Spring Cloud Netflix Eureka 服务治理

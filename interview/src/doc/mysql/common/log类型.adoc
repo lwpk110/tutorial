@@ -1,13 +1,96 @@
-
 == undo log
 
+=== undo是什么
+
+undo日志用于存放数据修改被修改前的值，假设修改 tba 表中 id=2的行数据，把Name='B' 修改为Name = 'B2' ，那么undo日志就会用来存放Name='B'的记录，如果这个修改出现异常，可以使用undo日志来实现回滚操作，保证事务的一致性。
+
+对数据的变更操作，主要来自 `INSERT UPDATE DELETE` ，而UNDO LOG中分为两种类型::
+. 一种是 `INSERT_UNDO`（INSERT操作），记录插入的唯一键值；
+. 一种是 `UPDATE_UNDO`（包含UPDATE及DELETE操作），记录修改的唯一键值以及old column记录。
+
+|===
+|Id    |Name
+
+|1      |A
+|2      |B
+|3      |C
+|4      |D
+|===
+
+=== undo参数
+
+[source]
+----
+mysql> show global variables like '%undo%';
++--------------------------+------------+
+| Variable_name            | Value      |
++--------------------------+------------+
+| innodb_max_undo_log_size | 1073741824 |
+| innodb_undo_directory    | ./         |
+| innodb_undo_log_truncate | OFF        |
+| innodb_undo_logs         | 128        |
+| innodb_undo_tablespaces  | 3          |
++--------------------------+------------+
+
+mysql> show global variables like '%truncate%';
++--------------------------------------+-------+
+| Variable_name                        | Value |
++--------------------------------------+-------+
+| innodb_purge_rseg_truncate_frequency | 128   |
+| innodb_undo_log_truncate             | OFF   |
++--------------------------------------+-------+
+----
+
+* innodb_undo_log_truncate
++
+InnoDB的purge线程，根据 `innodb_undo_log_truncate` 设置开启或关闭、`innodb_max_undo_log_size` 的参数值，
+以及 `truncate` 的频率来进行空间回收和 `undo file` 的重新初始化。
+该参数生效的前提是，已设置独立表空间且独立表空间个数大于等于2个。
++
+purge线程在 `truncate undo log file` 的过程中，需要检查该文件上是否还有活动事务，如果没有，需要把该 `undo log file`
+标记为不可分配，这个时候，`undo log` 都会记录到其他文件上，所以至少需要2个独立表空间文件，才能进行truncate 操作，标注
+不可分配后，会创建一个独立的文件undo_<space_id>_trunc.log，记录现在正在truncate 某个undo log文件，然后开始初始化
+`undo log file` 到10M，操作结束后，删除表示truncate动作的 undo_<space_id>_trunc.log 文件，这个文件保证了即使在
+truncate过程中发生了故障重启数据库服务，重启后，服务发现这个文件，也会继续完成truncate操作，删除文件结束后，标识该
+`undo log file` 可分配。
+
+* innodb_max_undo_log_size
++
+控制最大undo tablespace文件的大小，当启动了innodb_undo_log_truncate 时，undo tablespace 超过
+innodb_max_undo_log_size 阀值时才会去尝试truncate。该值默认大小为1G，truncate后的大小默认为10M。
+
+* innodb_undo_tablespaces
++
+设置undo独立表空间个数，范围为0-128， 默认为0，0表示表示不开启独立undo表空间 且 undo日志存储在ibdata文件中。该参数只
+能在最开始初始化MySQL实例的时候指定，如果实例已创建，这个参数是不能变动的，如果在数据库配置文 件 .cnf 中指定
+innodb_undo_tablespaces 的个数大于实例创建时的指定个数，则会启动失败，提示该参数设置有误。
++
+如果设置了该参数为n（n>0），那么就会在undo目录下创建n个undo文件（undo001，undo002 ...... undo n），每个文件默认大小为10M.
++
+什么时候需要来设置这个参数呢？::
+当DB写压力较大时，可以设置独立UNDO表空间，把UNDO LOG从ibdata文件中分离开来，指定 innodb_undo_directory目录存放，
+可以制定到高速磁盘上，加快UNDO LOG 的读写性能。
+
+* innodb_purge_rseg_truncate_frequency
+用于控制purge回滚段的频度，默认为128。假设设置为n，则说明，当Innodb Purge操作的协调线程 purge事务128次时，就会触发一
+次History purge，检查当前的undo log 表空间状态是否会触发truncate。
+
+
+
+
+
+
+
+
+
+
 == redo log
+
 https://www.cnblogs.com/wyy123/p/7880077.html
 == binlog
 https://www.cnblogs.com/Presley-lpc/p/9619571.html
 
 https://blog.csdn.net/wwwdc1012/article/details/88373440
-服务器使用多种日志格式在二进制日志中记录信息。采用的确切格式取决于所使用的 MySQL 版本。
-共有三种日志格式::
+服务器使用多种日志格式在二进制日志中记录信息。采用的确切格式取决于所使用的 MySQL 版本。 共有三种日志格式::
 .
 
