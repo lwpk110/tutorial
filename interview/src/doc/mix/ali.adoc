@@ -206,9 +206,9 @@ RDB冷备，AOF热备，故障后，优先加载AOF，其次RDB
 
 介绍下Synchronized、Volatile、CAS、AQS，以及各自的使用场景::
 +
-image::image-AQS1.png[]
+image::images/image-AQS1.png[]
 +
-image::image-AQS.png[]
+image::images/image-AQS.png[]
 +
 .概念
 ****

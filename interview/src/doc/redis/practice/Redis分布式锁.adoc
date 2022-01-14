@@ -1,21 +1,16 @@
 :origin-page: https://www.cnblogs.com/jiawen010/articles/11350125.html
 
-Redis分布式锁
+include::../../attributes.adoc[]
+
+= Redis分布式锁
+
 * 分布锁满足两个条件，一个是加有效时间的锁，一个是高性能解锁
-
 * 采用redis命令setnx（set if not exist）、setex（set expire value）实现
-
-
-
-
-
 * 【千万记住】解锁流程不能遗漏，否则导致任务执行一次就永不过期
-
 * 将加锁代码和任务逻辑放在try，catch代码块，将解锁流程放在finally
 
-
-
-复制代码
+[source,java]
+----
 package com.concurrent.schedule;
 
 import com.concurrent.util.IpUtil;
@@ -29,9 +24,6 @@ import org.springframework.stereotype.Component;
 import javax.management.MalformedObjectNameException;
 import java.util.concurrent.TimeUnit;
 
-/**
-* Created by zhangjiawen on 2019/8/13.
-*/
 @Component
 public class RedisSchedule {
 private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -64,36 +56,33 @@ System.out.println("TimeUnit.SECONDS"+TimeUnit.SECONDS);
 }
 
 }
-复制代码
+----
 
 
-分布式锁setnx、setex的缺陷，在setnx和setex中间发生了服务down机
-
+== 分布式锁setnx、setex的缺陷，在setnx和setex中间发生了服务down机
 
 * 从Redis宕机讲解分布式锁执行的异常场景流程
-
 * 从Server服务宕机讲解分布式锁执行的异常场景流程
-
 * 在setnx和setex中间发生了服务down机 那么key将没有超时时间 会一直存在，新的请求永远进不来
 
 
 
-解决方案：
-
+解决方案::
 由于setnx与setex是分步进行，那么我们将两步合成一步，放在同一个原子中即可
-
++
 * 怎么一次性执行过一条命令而不会出现问题，采用Lua脚本
-
 * Redis从2.6之后支持setnx、setex连用
 
-* Lua简介
-　　* 从 Redis 2.6.0 版本开始，通过内置的 Lua 解释器，可以使用 EVAL 命令对 Lua 脚本进行求值。
-　　* Redis 使用单个 Lua 解释器去运行所有脚本，并且， Redis 也保证脚本会以原子性(atomic)的方式执行：当某个脚本正在运行的时候，不会有其他脚本或 Redis 命令被执行。这和使用 MULTI / EXEC 包围的事务很类似。在其他别的客户端看来，脚本的效果(effect)要么是不可见的(not visible)，要么就是已完成的(already completed)。
-* Lua脚本配置流程
-　　* 1、在resource目录下面新增一个后缀名为.lua结尾的文件
-　　* 2、编写lua脚本
+== Lua简介
+* 从 Redis 2.6.0 版本开始，通过内置的 Lua 解释器，可以使用 EVAL 命令对 Lua 脚本进行求值。
+* Redis 使用单个 Lua 解释器去运行所有脚本，并且， Redis 也保证脚本会以原子性(atomic)的方式执行：当某个脚本正在运行的时候，不会有其他脚本或 Redis 命令被执行。这和使用 MULTI / EXEC 包围的事务很类似。在其他别的客户端看来，脚本的效果(effect)要么是不可见的(not visible)，要么就是已完成的(already completed)。
 
-复制代码
+Lua脚本配置流程::
+. 在resource目录下面新增一个后缀名为.lua结尾的文件
+. 编写lua脚本
++
+[source,lua]
+----
 local lockKey = KEYS[1]
 local lockTime = KEYS[2]
 local lockValue = KEYS[3]
@@ -107,12 +96,14 @@ return result_2
 else
 return 'faild'
 end
-复制代码
-　　* 3、传入lua脚本的key和arg
-　　* 4、调用redisTemplate.execute方法执行脚本
-* Lua脚本结合RedisTempalte实战演练
+----
+. 传入lua脚本的key和arg
+. 调用redisTemplate.execute方法执行脚本
 
-复制代码
+=== Lua脚本结合RedisTempalte实战演练
+
+[source,java]
+----
 package com.concurrent.schedule;
 
 import com.concurrent.util.IpUtil;
@@ -128,9 +119,6 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
-* Created by zhangjiawen on 2019/8/13.
-*/
 @Component
 public class LuaRedisSchedulePlus {
 private Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -188,21 +176,20 @@ private DefaultRedisScript<String> lockScript;
         return true;
     }
 }
-复制代码
+----
 
 
 
-* Lua脚本其他工作场景剖析和演练
-* lua eval http://doc.redisfans.com/script/eval.html
+=== Lua脚本其他工作场景剖析和演练
+http://doc.redisfans.com/script/eval.html[lua eval]
 
-lua脚本做高可用分布式锁的优化
--当某个锁需要持有的时间小于锁超时时间时会出现两个进程同时执行任务的情况，
-​ 这时候如果进程没限制只有占有这把锁的人才能解锁的原则就会出现，
-​ A解了B的锁。
+lua脚本做高可用分布式锁的优化::
+-当某个锁需要持有的时间小于锁超时时间时会出现两个进程同时执行任务的情况， 这时候如果进程没限制只有占有这把锁的人才能解锁的原则就会出现， A解了B的锁。
 
 解决方案：删除key的时候判断一下value是否是当前value，是的话删除，否则不执行删除，将原来代码finally修改如下
 
-复制代码
+[source,java]
+----
 }catch (Exception e){
 logger.error("setNx error!");
 e.printStackTrace();
@@ -210,8 +197,10 @@ e.printStackTrace();
 // redisTemplate.delete(publicKey);
 // releaseLock(publicKey,ipConfig);
 }
-复制代码
-复制代码
+----
+
+[source]
+----
 /**
 * 释放锁操作
 * @param key
@@ -230,10 +219,12 @@ keyList.add(value);
 Boolean result = (Boolean) redisTemplate.execute(lockScript, keyList);
 return result;
 }
-复制代码
-添加解锁lua脚本
+----
 
-复制代码
+添加解锁lua脚本::
+
+[source,lua]
+----
 local lockKey = KEYS[1]
 local lockValue = KEYS[2]
 
@@ -246,4 +237,4 @@ return result_2
 else
 return false
 end
-复制代码
+----

@@ -4,36 +4,33 @@
 
 Spring Cloud是一个全家桶式的技术栈，包含了很多组件。本文先从其最核心的几个组件入手，来剖析一下其底层的工作原理。也就是Eureka、Ribbon、Feign、Hystrix、Zuul这几个组件。
 
-1.Spring Cloud Netflix Eureka 服务治理
+== Spring Cloud Netflix Eureka 服务治理
 
 Eureka，服务注册和发现，它提供了一个服务注册中心、服务发现的客户端，还有一个方便的查看所有注册的服务的界面。 所有的服务使用Eureka的服务发现客户端来将自己注册到Eureka的服务器上。
 
-2.Spring Cloud Ribbon 负载均衡
+== Spring Cloud Ribbon 负载均衡
 
 即负载均衡，Zuul网关将一个请求发送给某一个服务的应用的时候，如果一个服务启动了多个实例，就会通过Ribbon来通过一定的负载均衡策略来发送给某一个服务实例
 
-3.Spring Cloud Hystrix 服务容错保护 ,监控和熔断器。我们只需要在服务接口上添加Hystrix标签，就可以实现对这个接口的监控和断路器功能。
+== Spring Cloud Hystrix 服务容错保护 ,监控和熔断器。我们只需要在服务接口上添加Hystrix标签，就可以实现对这个接口的监控和断路器功能。
 
 Hystrix Dashboard，监控面板，他提供了一个界面，可以监控各个服务上的服务调用所消耗的时间等。发起请求是通过Hystrix的线程池来走的，不同的服务走不同的线程池，实现了不同服务调用的隔离，避免了服务雪崩的问题
 
 Turbine，监控聚合，使用Hystrix监控，我们需要打开每一个服务实例的监控信息来查看。而Turbine可以帮助我们把所有的服务实例的监控信息聚合到一个地方统一查看。这样就不需要挨个打开一个个的页面一个个查看。
 
-4.Spring Cloud Feign 声明式服务调用
+== Spring Cloud Feign 声明式服务调用
 
 服务客户端，服务之间如果需要相互访问，可以使用RestTemplate，也可以使用Feign客户端访问。它默认会使用Ribbon来实现负载均衡。基于Feign的动态代理机制，根据注解和选择的机器，拼接请求URL地址，发起请求
 
-5.Spring Cloud Zuul API网关服务
+== Spring Cloud Zuul API网关服务
 
 网关，所有的客户端请求通过这个网关访问后台的服务。他可以使用一定的路由配置来判断某一个URL由哪个服务来处理。并从Eureka获取注册的服务来转发请求。
 
-6.Spring Cloud Config 分布式配置中心类似于Apollo
-7.Spring Cloud Bus 消息总线：是一种消息代理，消息验证，传输，路由的架构模式，用来接收和分发消息。支持RabbitMQ和Kafka（实现原理就是AMQP面向
+== Spring Cloud Config 分布式配置中心类似于Apollo
+== Spring Cloud Bus 消息总线：是一种消息代理，消息验证，传输，路由的架构模式，用来接收和分发消息。支持RabbitMQ和Kafka（实现原理就是AMQP面向
 消息中间件的开发室标准应用成协议）可以实现消息方向，消息队列效率路由，可靠性，安全性
 Spring Cloud Sleuth分布式服务跟踪 如SkyWalking
 
-
-
-回到顶部
 一、业务场景介绍
 先来给大家说一个业务场景，假设咱们现在开发一个电商网站，要实现支付订单的功能，流程如下：
 
@@ -68,9 +65,7 @@ Spring Cloud Sleuth分布式服务跟踪 如SkyWalking
  好！有了业务场景之后，咱们就一起来看看Spring Cloud微服务架构中，这几个组件如何相互协作，各自发挥的作用以及其背后的原理。
 
 
-
-回到顶部
-二、Spring Cloud核心组件：Eureka
+== 二、Spring Cloud核心组件：Eureka
 咱们来考虑第一个问题：订单服务想要调用库存服务、仓储服务，或者是积分服务，怎么调用？
 
 订单服务压根儿就不知道人家库存服务在哪台机器上啊！他就算想要发起一个请求，都不知道发送给谁，有心无力！
@@ -93,12 +88,9 @@ Spring Cloud Sleuth分布式服务跟踪 如SkyWalking
 
 
 
-总结一下：
-
+NOTE: 总结一下：
 Eureka Client：负责将这个服务的信息注册到Eureka Server中 ，既可以是服务提供者也可以是服务消费者
-
 Eureka Server：注册中心，里面有一个注册表，保存了各个服务所在的机器和端口号
-
 
 
 Eureka基础架构
