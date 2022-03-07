@@ -1,0 +1,157 @@
+= unix 架构
+
+image::images/unix_architecture.jpg[]
+
+== 概念
+
+所有 Unix 版本的主要概念是以下四个基本概念::
+* Kernel - 内核是操作系统的心脏。它与硬件和大多数任务(如内存管理、任务调度和文件管理)进行交互;
+* Shell - Shell 是处理请求的实用程序。当您在终端输入命令时，shell 将解释该命令并调用所需的程序。Shell 对所有命令使用标准语法。C Shell, Bourne Shell 和 Korn Shell是最著名的 Shell，它们在大多数 Unix 变体中都是可用的。
+* Commands and Utilities - 有各种各样的命令和工具程序，您可以使用在您的日常活动中。Cp、 mv、 cat 和 grep 等命令使他们的的几个示例。有超过250个标准命令加上许多其他通过第三方软件提供。所有的命令都附带了各种选项。
+* 文件和目录—— Unix 的所有数据被组织成文件。然后将所有文件组织到目录中。这些目录进一步被组织成树形结构，称为文件系统。
+
+== 系统启动
+
+如果你有一台安装了 Unix 操作系统的计算机，那么你只需要打开它就可以了。
+
+一旦您打开系统，它就开始启动并最终提示您登录到系统，这是一个登录到系统并用于日常活动的活动。
+
+:file_type_origin: https://linuxconfig.org/identifying-file-types-in-linux
+== 文件类型
+
+在浏览 Linux 文件系统时，您肯定会遇到不同的文件类型。最常用和最明显的文件类型是常规文件和目录。但是，Linux 操作系统在文件类型方面提供了更多功能，因为它还包括另外 5 种文件类型。这篇简短的文章将帮助您识别 Linux 操作系统中的所有 7 种不同的文件类型。
+
+识别 Linux 文件类型::
+您只需要知道 1 个命令，它将帮助您识别和分类 Linux 系统上发现的所有七种不同文件类型。
++
+[source]
+----
+$ ls -ld <文件名>
+----
++
+这是上述命令的示例输出。
++
+[source]
+----
+$ ls -ld /etc/services
+- rw-r--r-- 1 root root 19281 2012 年 2 月 14 日 /etc/services
+----
+
+ls命令将文件类型显示为作为文件权限部分的第一个字符的编码符号。在这种情况下，“-” 表示“常规文件”。重要的是要指出 Linux 文件类型不能与文件扩展名混淆。
+
+七种不同类型的 Linux 文件类型和ls命令标识符的简短摘要::
+- `-`：常规文件
+- `d`：目录
+- `c` : 字符设备文件
+- `b` : 块设备文件
+- `s` : 本地套接字文件
+- `p` : 命名管道
+- `l` ：符号链接
+
+
+=== 常规文件 - `-`
+
+常规文件是 Linux 系统上最常见的文件类型。它管理所有不同的文件，例如文本文件、图像、二进制文件、共享库等。您可以使用touch命令创建常规文件：
+
+[source]
+----
+$ touch linuxcareer.com
+$ ls -ld linuxcareer.com
+-rw-rw-r-- 1 总共 0 Jan 10 12:52 linuxcareer.com
+----
+
+ls命令的第一个字符，在本例中为“-”，表示常规文件的识别码。要删除常规文件，您可以使用rm命令：
+
+[source]
+----
+$ rm linuxcareer.com
+$
+----
+
+=== 目录 - `d`
+
+目录是 Linux 中第二常见的文件类型。可以使用mkdir命令创建目录：
+
+[source]
+----
+$ mkdir FileTypes
+$ ls -ld FileTypes/
+drwxrwxr -x 2 absolute absolute 4096 Jan 10 13:14 FileTypes/
+----
+如前所述，目录可以通过ls命令输出中的“d”符号标识。要删除空目录，请使用rmdir命令。
+
+[source]
+----
+$ rmdir FileTypes
+----
+
+尝试使用rmdir命令删除包含其他文件的目录时，您将收到一条错误消息：
+
+[source]
+----
+rmdir: 删除 `FileTypes/' 失败: 目录不为空
+----
+
+在这种情况下，您需要使用命令：
+
+[source]
+----
+$ rm -r FileTypes/
+----
+
+=== 字符设备 - `c`
+
+字符和块设备文件允许用户和程序与硬件外围设备进行通信。例如：
+
+[source]
+----
+$ ls -ld /dev/vmmon
+c rw------- 1 root root 10, 165 Jan 4 10:13 /dev/vmmon
+----
+在这种情况下，字符设备是 vmware 模块设备。
+
+=== 块设备 - `b`
+块设备类似于字符设备。它们主要管理硬件，如硬盘驱动器、内存等。
+
+[source]
+----
+s ls -ld /dev/sda
+brw-rw ---- 1 root disk 8, 0 Jan 4 10:12 /dev/sda
+----
+
+=== 本地域套接字 - `s`
+
+本地域套接字用于进程之间的通信。通常，它们被 X windows、syslog 等服务使用。
+
+[source]
+----
+$ ls -ld /dev/log
+srw-rw-rw- 1 root root 0 Jan 4 10:13 /dev/log
+----
+
+套接字可以通过套接字系统调用创建并通过 `unlink` 或 `rm` 命令删除。
+
+=== 命名管道 - `p`
+
+与本地套接字类似，命名管道允许两个本地进程之间进行通信。它们可以通过 `mknod`命令创建并使用 `rm 命令删除。
+
+=== 符号链接 - `l`
+使用符号链接，管理员可以为文件或目录分配多个身份。符号链接可以作为指向原始文件的指针。
+
+有两种类型的符号链接::
+- 硬链接
+- 软链接
+
+硬链接和软链接的区别在于，软链接使用文件名作为引用，而硬链接直接引用原始文件。此外，硬链接不能跨越文件系统和分区。要创建符号软链接，我们可以使用ln -s命令：
+
+[source]
+----
+$ echo file1> file1
+$ ln -s file1 file2
+$ cat file2
+file1
+$ ls -ld file2
+l rwxrwxrwx 1 lubos lubos 5 Jan 10 14:42 file2 -> file1
+----
+
+要删除符号链接，我们可以使用 `unlink` 或 `rm` 命令。

@@ -1,6 +1,11 @@
+include::../attributes.adoc[]
+
 = 动态代理
 
-== 原理
+== JDK 动态代理
+
+=== 原理
+
 动态代理具体步骤::
 . 通过实现 InvocationHandler 接口创建自己的调用处理器；
 . 通过为 Proxy 类指定 ClassLoader 对象和一组 interface 来创建动态代理类；
@@ -332,5 +337,7 @@ image.png
 如图，生成了两个名为 Proxy1.class的class文件。
 
 动态代理流程图::
++
+image::images/cglib.png[]
 
-image::cglib.png[]
+== CGLIB 动态代理

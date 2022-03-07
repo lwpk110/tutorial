@@ -1,4 +1,5 @@
 include::../attributes.adoc[]
+
 == Tomcat
 === Tomcat是什么？
 Tomcat 服务器Apache软件基金会项目中的一个核心项目，是一个免费开源的轻量级 Web 应用服务器，在中小型系统和并发访问用户不大的场合下被普遍使用，是开发和调试 JSP 程序的首选。
@@ -43,6 +44,7 @@ Web应用默认的类加载顺序（打破了双亲委派规则）::
 === Tomcat的基本架构是什么？
 
 image::images/tomcat-arch.png[]
+
 
 . Tomcat中只有一个Server，一个Server可以有多个Service，一个Service可以有多个Connector和一个Container；
 . Server掌管着整个Tomcat的生死大权；

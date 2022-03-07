@@ -5,4 +5,5 @@ include 'ddd'
 include 'osgi'
 include 'bundle'
 include 'io'
+include 'demo'
 
